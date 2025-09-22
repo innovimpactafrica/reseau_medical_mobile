@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../patient/utils/HexColor.dart';
 
 // Importez vos pages d'inscription
-import '../centre/pages/inscriptioncentre.dart';
+
 import '../medecin/pages/inscriptiondoctor.dart';
 import '../patient/pages/inscriptionpatient.dart';
 
@@ -15,9 +15,7 @@ class CreateAccountPage extends StatelessWidget {
       case 'doctor':
         page = const Inscriptiondoctor();
         break;
-      case 'health_center':
-        page = const Inscriptioncentre();
-        break;
+     
       case 'patient':
         page = const Inscription();
         break;

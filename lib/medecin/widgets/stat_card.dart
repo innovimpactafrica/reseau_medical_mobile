@@ -1,100 +1,116 @@
 import 'package:flutter/material.dart';
-import '../utils/HexColor.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rmelapp/medecin/utils/HexColor.dart';
 
-class StatisticsCard extends StatelessWidget {
-  const StatisticsCard({super.key});
+class StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String subtitle;
+  final bool isNegative;
+  final String? iconPath;      // Icône à droite
+  final String? titleIconPath; // Icône à gauche du subtitle
+
+  const StatCard({
+    Key? key,
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    this.isNegative = false,
+    this.iconPath,
+    this.titleIconPath,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final color = isNegative ? Colors.red : Colors.green;
+    final arrowIcon = isNegative ? Icons.arrow_downward : Icons.arrow_upward;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: 50,
+      height: 100,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // ✅ Liste des stats
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:  [
-              _StatLine("Patients absents", "02", HexColor('#E53E3E')), // rouge
-              SizedBox(height: 8),
-              _StatLine("Ordonnances",      "09", HexColor('#2B6CB0')), // bleu
-              SizedBox(height: 8),
-              _StatLine("Comptes rendus",   "05", HexColor('#FEB2B2')), // orange
-              SizedBox(height: 8),
-              _StatLine("Consultations",    "12", HexColor('#90CDF4')), // bleu clair
-            ],
-          ),
-
-          // ✅ Mini bar chart (fixe comme sur la maquette)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children:  [
-              _Bar(height: 16, color: HexColor('#E53E3E')),
-              SizedBox(width: 6),
-              _Bar(height: 40, color: HexColor('#2B6CB0')),
-              SizedBox(width: 6),
-              _Bar(height: 28, color: HexColor('#FEB2B2')),
-              SizedBox(width: 6),
-              _Bar(height: 56, color: HexColor('#90CDF4')),
-            ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-    );
-  }
-}
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Flèche de tendance
+        
+          const SizedBox(width: 8),
 
-class _StatLine extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
+          // Texte principal
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Titre
+                Text(
+                  title,
+                  style:  TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: HexColor('#64748B')),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
 
-  const _StatLine(this.label, this.value, this.color);
+                // Valeur
+                Text(
+                  value,
+                  style:  TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: HexColor('#1E293B')),
+                ),
+                const Spacer(),
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style:  TextStyle(
-            color: HexColor('#5C738A'),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+                // Subtitle avec icône à gauche sur la même ligne
+                Row(
+                  children: [
+                    if (titleIconPath != null) ...[
+                      SvgPicture.asset(
+                        titleIconPath!,
+                        width: 12,
+                        height: 13,
+                      ),
+                      const SizedBox(width: 4),
+                    ],
+                    Flexible(
+                      child: Text(
+                        subtitle,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: color,
+                            fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          value,
-          style: TextStyle(
-            color: color,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
-class _Bar extends StatelessWidget {
-  final double height;
-  final Color color;
-
-  const _Bar({required this.height, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 12,
-      height: height,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(1),
+          // Icône à droite
+          if (iconPath != null) ...[
+            const SizedBox(width: 8),
+            SvgPicture.asset(
+              iconPath!,
+              width: 14,
+              height: 11,
+            ),
+          ],
+        ],
       ),
     );
   }

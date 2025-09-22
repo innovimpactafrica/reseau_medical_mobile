@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rmelapp/demarrage/onboarding1.dart';
-
+import '../patient/pages/ordonnances/ordonnance_page.dart';
 import 'package:rmelapp/demarrage/splash01.dart';
 import 'package:rmelapp/patient/pages/compte/compte_page.dart';
 import 'package:rmelapp/patient/pages/dashboard.dart';

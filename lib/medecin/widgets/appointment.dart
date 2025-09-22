@@ -1,97 +1,108 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class AppointmentsSection extends StatelessWidget {
-  const AppointmentsSection({super.key});
+class AppointmentStatusChart extends StatelessWidget {
+  const AppointmentStatusChart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Rendez-vous",
-          style: TextStyle(
-            color: Color(0xFF111827),
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              // ✅ Légendes
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  _Legend("A venir", "09", Color(0xFF1E40AF)), // bleu foncé
-                  SizedBox(height: 8),
-                  _Legend("Terminés", "12", Color(0xFF60A5FA)), // bleu clair
-                  SizedBox(height: 8),
-                  _Legend("Annulés", "02", Color(0xFFDC2626)), // rouge
-                ],
+              Icon(
+                Icons.schedule,
+                size: 16,
+                color: const Color(0xFF3B82F6),
               ),
-
-              // ✅ Pie chart stylisé (factice comme dans la maquette)
-              CustomPaint(
-                size: Size(80, 80),
-                painter: _PieChartPainter(),
+              const SizedBox(width: 8),
+              const Text(
+                "Statut des rendez-vous",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: Color(0xFF1F2937),
+                ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 20),
+          Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: PieChart(
+                    PieChartData(
+                      sectionsSpace: 4,
+                      centerSpaceRadius: 45,
+                      sections: [
+                        PieChartSectionData(
+                          color: const Color(0xFF3B82F6),
+                          value: 68,
+                          title: '',
+                          radius: 25,
+                        ),
+                        PieChartSectionData(
+                          color: const Color(0xFF10B981),
+                          value: 32,
+                          title: '',
+                          radius: 25,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "68%",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1F2937),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        "À venir : 22",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Color(0xFF6B7280),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
-}
-
-class _Legend extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _Legend(this.label, this.value, this.color);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-        const SizedBox(width: 6),
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        const SizedBox(width: 6),
-        Text(value, style: TextStyle(color: color, fontWeight: FontWeight.w600)),
-      ],
-    );
-  }
-}
-
-class _PieChartPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-    final radius = size.width / 2;
-    final center = Offset(radius, radius);
-
-    // Segment A venir
-    paint.color = const Color(0xFF1E40AF);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -0.5, 1.5, true, paint);
-
-    // Segment Terminés
-    paint.color = const Color(0xFF60A5FA);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 1.0, 3.5, true, paint);
-
-    // Segment Annulés
-    paint.color = const Color(0xFFDC2626);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 4.5, 0.8, true, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

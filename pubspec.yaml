@@ -84,7 +84,8 @@ flutter:
       - assets/icons/google.png
       - assets/icons/apple.png
       - assets/icons/doc.png
-      - assets/icons/rdv.png
+      - assets/icons/pat.png
+      - assets/icons/patie.png
       - assets/icons/ordonn.png
       - assets/icons/script.png
       - assets/icons/mage.png
@@ -122,6 +123,19 @@ flutter:
       - assets/icons/frame5.svg
       - assets/icons/accu.svg
       - assets/icons/cal.svg
+      - assets/icons/abs.svg
+      - assets/icons/cr.png
+      - assets/icons/fileo.svg
+      - assets/icons/agend.svg
+      - assets/icons/solar.png
+      - assets/icons/mess.png
+      - assets/icons/filepa.png
+      - assets/icons/filetext.png
+      - assets/icons/share.png
+      - assets/icons/filedoc.png
+      - assets/icons/programme.png
+      - assets/icons/proicons.png
+      - assets/icons/dispo.png
   
 
 
