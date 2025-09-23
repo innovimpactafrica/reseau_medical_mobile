@@ -1,9 +1,11 @@
 // main_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // ✅ Nécessaire pour SvgPicture
-import 'package:rmelapp/medecin/pages/calendar.dart';
+import 'package:rmelapp/medecin/pages/agenda/calendar.dart';
 
 import 'package:rmelapp/medecin/pages/dashboard_doctor.dart';
+import 'package:rmelapp/medecin/pages/messages/message.dart';
+import 'package:rmelapp/medecin/pages/profil/compte.dart';
 
 import '../utils/HexColor.dart';
 
@@ -34,8 +36,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildCurrentPage() {
     final List<Widget> pages = [
        DashboardDoctor(),
-      const CalendarPage(),
+       CalendarPage(),
+       OrdonnancePage(),
+       Message(),
+       DocteurCompte()
       
+
       
     ];
 

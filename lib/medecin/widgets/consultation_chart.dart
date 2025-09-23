@@ -37,7 +37,7 @@ class ConsultationChart extends StatelessWidget {
                     "Évolution des consultations",
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Color(0xFF1F2937),
                     ),
                   ),

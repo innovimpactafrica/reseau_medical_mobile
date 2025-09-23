@@ -113,7 +113,7 @@ class PathologyChart extends StatelessWidget {
                       BarChartRodData(
                         toY: 24,
                         color: const Color(0xFF3B82F6),
-                        width: 32,
+                        width: 15,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       )
                     ],
@@ -124,7 +124,7 @@ class PathologyChart extends StatelessWidget {
                       BarChartRodData(
                         toY: 18,
                         color: const Color(0xFF10B981),
-                        width: 32,
+                        width: 15,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       )
                     ],
@@ -135,7 +135,7 @@ class PathologyChart extends StatelessWidget {
                       BarChartRodData(
                         toY: 12,
                         color: const Color(0xFFF59E0B),
-                        width: 32,
+                        width: 15,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       )
                     ],
@@ -146,7 +146,7 @@ class PathologyChart extends StatelessWidget {
                       BarChartRodData(
                         toY: 8,
                         color: const Color(0xFFEF4444),
-                        width: 32,
+                        width: 15,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       )
                     ],
@@ -157,7 +157,7 @@ class PathologyChart extends StatelessWidget {
                       BarChartRodData(
                         toY: 14,
                         color: const Color(0xFF8B5CF6),
-                        width: 32,
+                        width: 15,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       )
                     ],

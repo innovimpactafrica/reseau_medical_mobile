@@ -1,14 +1,15 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rmelapp/medecin/utils/HexColor.dart';
+import '../utils/HexColor.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
   final String subtitle;
   final bool isNegative;
-  final String? iconPath;      // Icône à droite
-  final String? titleIconPath; // Icône à gauche du subtitle
+  final String? iconPath;        // Icône à droite (ligne du titre)
+  final String? titleIconPath;   // Icône à gauche du titre
 
   const StatCard({
     Key? key,
@@ -26,8 +27,8 @@ class StatCard extends StatelessWidget {
     final arrowIcon = isNegative ? Icons.arrow_downward : Icons.arrow_upward;
 
     return Container(
-      width: 50,
-      height: 100,
+      width: double.infinity,
+      height: 95,
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -36,80 +37,78 @@ class StatCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
+            blurRadius: 4,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Flèche de tendance
-        
-          const SizedBox(width: 8),
-
-          // Texte principal
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Titre
-                Text(
-                  title,
-                  style:  TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: HexColor('#64748B')),
-                  overflow: TextOverflow.ellipsis,
+          // Ligne 1 : Icone + Titre à gauche, Icone à droite
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (titleIconPath != null) ...[
+                SvgPicture.asset(
+                  titleIconPath!,
+                  width: 12,
+                  height: 13,
                 ),
-                const SizedBox(height: 6),
-
-                // Valeur
-                Text(
-                  value,
-                  style:  TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: HexColor('#1E293B')),
-                ),
-                const Spacer(),
-
-                // Subtitle avec icône à gauche sur la même ligne
-                Row(
-                  children: [
-                    if (titleIconPath != null) ...[
-                      SvgPicture.asset(
-                        titleIconPath!,
-                        width: 12,
-                        height: 13,
-                      ),
-                      const SizedBox(width: 4),
-                    ],
-                    Flexible(
-                      child: Text(
-                        subtitle,
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: color,
-                            fontWeight: FontWeight.w500),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+                const SizedBox(width: 3),
               ],
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: HexColor('#64748B'),
+                  ),
+                ),
+              ),
+              if (iconPath != null)
+                SvgPicture.asset(
+                  iconPath!,
+                  width: 12,
+                  height: 13,
+                ),
+            ],
+          ),
+
+          const SizedBox(height: 4),
+
+          // Ligne 2 : Valeur principale
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
 
-          // Icône à droite
-          if (iconPath != null) ...[
-            const SizedBox(width: 8),
-            SvgPicture.asset(
-              iconPath!,
-              width: 14,
-              height: 11,
-            ),
-          ],
+          const SizedBox(height: 4),
+
+          // Ligne 3 : Flèche + Subtitle
+          Row(
+            children: [
+              Icon(
+                arrowIcon,
+                size: 13,
+                color: color,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rmelapp/medecin/pages/ordonnance/choix_patient.dart';
 import '../../utils/HexColor.dart';
 import 'details_pordonnance.dart';
 
@@ -12,12 +13,23 @@ class OrdonnancesPage extends StatefulWidget {
 class _OrdonnancesPageState extends State<OrdonnancesPage> {
   String selectedCategory = "Toutes";
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor('#F9FAFB'),
+
+      // ✅ Bouton flottant (à l’extérieur du Column)
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF1E40AF),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChoisirPatient()),
+          );
+        },
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,7 +39,7 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
             padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
             color: HexColor("#305579"),
             child: const Text(
-              "Mes ordonnances",
+              "Ordonnances",
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -75,13 +87,11 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    
-
                     // ✅ Liste des ordonnances
                     _buildOrdonnanceCard(
                       context,
                       title: "Lamine Diop",
-                      doctor: "2 medicaments ",
+                      doctor: "2 médicaments",
                       date: "15 juin 2025",
                       size: "1.1 MB",
                       isNew: true,
@@ -89,14 +99,14 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
                     _buildOrdonnanceCard(
                       context,
                       title: "Amadou Diallo",
-                      doctor: "2 medicaments",
+                      doctor: "2 médicaments",
                       date: "05 juin 2025",
                       size: "1.2 MB",
                     ),
                     _buildOrdonnanceCard(
                       context,
-                      title: "Fatou Ndiaye ",
-                      doctor: "3 medicaments",
+                      title: "Fatou Ndiaye",
+                      doctor: "3 médicaments",
                       date: "28 mai 2025",
                       size: "1.5 MB",
                     ),
@@ -125,9 +135,7 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrdonnanceDetailPage(
-              
-            ),
+            builder: (context) => const OrdonnanceDetailPage(),
           ),
         );
       },
@@ -148,7 +156,7 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
         ),
         child: Row(
           children: [
-            // ✅ Icône document (asset)
+            // ✅ Icône document
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -211,9 +219,9 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
               ),
             ),
 
-            // ✅ Bouton téléchargement (asset possible)
+            // ✅ Bouton téléchargement
             IconButton(
-              icon:  Image.asset('assets/icons/tele.png', color: Colors.blue),
+              icon: Image.asset('assets/icons/tele.png', height: 24),
               onPressed: () {},
             ),
           ],
@@ -222,4 +230,3 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
     );
   }
 }
-

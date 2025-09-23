@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rmelapp/medecin/pages/profil/compte.dart';
 import 'package:rmelapp/medecin/utils/HexColor.dart';
 import '../widgets/quick_action.dart';
 import '../widgets/consultation_chart.dart';
@@ -9,95 +10,10 @@ import '../widgets/appointment_list.dart';
 import './affiliation.dart';
 import './ordonnance/ordonnance_page.dart';
 import './patient.dart';
-import 'calendar.dart';
+import 'agenda/calendar.dart';
+import './messages/message.dart';
+import '../widgets/stat_card.dart';
 
-// -------------------- StatCard --------------------
-class StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String subtitle;
-  final bool isNegative;
-  final String? iconPath; // Icône à droite
-  final String? titleIconPath; // Icône à côté du titre
-
-  const StatCard({
-    Key? key,
-    required this.title,
-    required this.value,
-    required this.subtitle,
-    this.isNegative = false,
-    this.iconPath,
-    this.titleIconPath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isNegative ? Colors.red : Colors.green;
-    final arrowIcon = isNegative ? Icons.arrow_downward : Icons.arrow_upward;
-
-    return Container(
-      width: double.infinity,
-      height: 100,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(arrowIcon, color: color, size: 20),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87)),
-                    if (titleIconPath != null) ...[
-                      const SizedBox(width: 4),
-                      SvgPicture.asset(titleIconPath!, width: 16, height: 16),
-                    ]
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(value,
-                    style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black)),
-                const Spacer(),
-                Text(subtitle,
-                    style: TextStyle(
-                        fontSize: 12, color: color, fontWeight: FontWeight.w500)),
-              ],
-            ),
-          ),
-          if (iconPath != null) ...[
-            SvgPicture.asset(
-              iconPath!,
-              width: 28,
-              height: 28,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
 
 // -------------------- DashboardDoctor --------------------
 class DashboardDoctor extends StatefulWidget {
@@ -114,6 +30,7 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: HexColor('#F2F5FA'),
 
       // 👉 AppBar affiché uniquement si index = 0
@@ -137,6 +54,7 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
+                        
                       color: HexColor('#E9EFFD'),
                       shape: BoxShape.circle,
                     ),
@@ -196,10 +114,10 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
         index: _currentBottomIndex,
         children: [
           _buildDashboardContent(),
-          const CalendarPage(),
+           CalendarPage(),
           const OrdonnancesPage(),
-          const MessagesPage(),
-          const ProfilPage(),
+          const Message(),
+          const DocteurCompte(),
         ],
       ),
       bottomNavigationBar: _buildBottomNavigation(),
@@ -220,61 +138,62 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
   }
 
   // --- Stat Cards ---
-  Widget _buildStatCards() {
-    return Container(
-      color: HexColor('#F2F5FA'),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Row(
-            children: const [
-              Expanded(
-                child: StatCard(
-                  title: "Consultations",
-                  value: "5",
-                  subtitle: "3 réalisées, 2 à venir",
-                  iconPath: 'assets/icons/agend.svg',
-                  titleIconPath: 'assets/icons/plus.svg',
-                ),
+Widget _buildStatCards() {
+  return Container(
+    color: HexColor('#F2F5FA'),
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      children: [
+        Row(
+          children: const [
+            Expanded(
+              child: StatCard(
+                title: "Consultations",
+                value: "5",
+                subtitle: "3 réalisées, 2 à venir",
+                iconPath: 'assets/icons/agend.svg',
+                titleIconPath: 'assets/icons/plus.svg',
               ),
-              SizedBox(width: 12),
-              Expanded(
-                child: StatCard(
-                  title: "Ordonnances",
-                  value: "32",
-                  subtitle: "+8% ce mois",
-                  iconPath: 'assets/icons/fileo.svg',
-                ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: StatCard(
+                title: "Ordonnances",
+                value: "32",
+                subtitle: "+8% ce mois",
+                iconPath: 'assets/icons/fileo.svg',
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: const [
-              Expanded(
-                child: StatCard(
-                  title: "Comptes rendus",
-                  value: "28",
-                  subtitle: "+5% ce mois",
-                  iconPath: 'assets/icons/cr.png',
-                ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: const [
+            Expanded(
+              child: StatCard(
+                title: "Comptes rendus",
+                value: "28",
+                subtitle: "+5% ce mois",
+                iconPath: 'assets/icons/cr.png',
               ),
-              SizedBox(width: 12),
-              Expanded(
-                child: StatCard(
-                  title: "Taux d'absence",
-                  value: "7%",
-                  subtitle: "-2% vs mois dernier",
-                  isNegative: true,
-                  iconPath: 'assets/icons/abs.svg',
-                ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: StatCard(
+                title: "Taux d'absence",
+                value: "7%",
+                subtitle: "-2% vs mois dernier",
+                isNegative: true,
+                iconPath: 'assets/icons/abs.svg',
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 
   // --- Quick Actions ---
   Widget _buildQuickActions() {
@@ -407,7 +326,7 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
                       width: 22,
                       height: 22,
                       color:
-                          isSelected ? HexColor('#EF4444') : HexColor('#64748B'),
+                          isSelected ? HexColor('#B53C3A') : HexColor('#64748B'),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -416,7 +335,7 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: isSelected
-                            ? HexColor('#EF4444')
+                            ? HexColor('#B53C3A')
                             : HexColor('#64748B'),
                       ),
                     ),

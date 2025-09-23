@@ -1,43 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:rmelapp/medecin/pages/ordonnance/new_ordonnance.dart';
 import '../../utils/HexColor.dart';
+import 'apercu_message.dart'; // ✅ On importe ta page de discussion
 
-class ChoisirPatient extends StatefulWidget {
-  const ChoisirPatient({super.key});
+class Message extends StatefulWidget {
+  const Message({super.key});
 
   @override
-  State<ChoisirPatient> createState() => _ChoisirPatientState();
+  State<Message> createState() => _MessageState();
 }
 
-class _ChoisirPatientState extends State<ChoisirPatient> {
-  
-
-  
-
+class _MessageState extends State<Message> {
   final List<Map<String, String>> medecins = [
     {
-      "initials": "LD",
-      "name": "Lamine Diop",
-      "age": "38ans",
-      "sexe": "Homme"
+      "initials": "MS",
+      "name": "Marie Sne",
+      "heure": "16:45",
+      "chat": "Bonjour Docteur, je me sens beaucoup mieux..."
     },
     {
       "initials": "AD",
       "name": "Amadou Diallo",
-      "age": "45ans",
-      "sexe": "Homme"
+      "heure": "16:43",
+      "chat": "Merci pour les conseils, Docteur. Je suivra..."
     },
     {
       "initials": "OS",
-      "name": "Ousmane Sarr",
-      "age": "62ans",
-      "sexe": "Homme"
-    },
-    {
-      "initials": "FN",
-      "name": "Fatou Ndiaye",
-      "age": "29ans",
-      "sexe": "Femme"
+      "name": "Ousmane Sow",
+      "heure": "Hier",
+      "chat": "Est-ce que je dois continuer à utiliser mon..."
     },
   ];
 
@@ -45,7 +35,6 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor('#F9FAFB'),
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,60 +70,25 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ✅ Barre de recherche
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: HexColor('#DBEAFE')),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      children:  [
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText:
-                                  "Rechercher un patient",
-                              hintStyle: TextStyle(color:HexColor('#CCCCCC')),
-                            ),
+                children: medecins.map((med) {
+                  return _buildMedecinCard(
+                    initials: med["initials"]!,
+                    name: med["name"]!,
+                    heure: med["heure"]!,
+                    chat: med["chat"]!,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatPage(
+                            patientName: med["name"]!,
+                            initials: med["initials"]!,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-
-                  // ✅ Liste des médecins
-                 Column(
-  children: medecins.map((med) {
-    return _buildMedecinCard(
-      initials: med["initials"]!,
-      name: med["name"]!,
-      specialite: med["specialite"]!,
-      lieu: med["lieu"]!,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => NewOrdonnancePage(
-              doctorName: med["name"]!,
-              specialty: med["age"]!,
-              clinic: med["sexe"]!,
-              initials: med["initials"]!,
-                              ),
-                            ),
-                          );
-                        },
                       );
-                    }).toList(),
-                  ),
-                ],
+                    },
+                  );
+                }).toList(),
               ),
             ),
           ),
@@ -147,8 +101,8 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
   Widget _buildMedecinCard({
     required String initials,
     required String name,
-    required String specialite,
-    required String lieu,
+    required String heure,
+    required String chat,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -191,23 +145,23 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "$specialite  •  $lieu",
+                    chat,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.black54,
-                      fontSize: 12,
+                      fontSize: 13,
                     ),
                   ),
                 ],
               ),
             ),
 
-            // ✅ Disponible
+            // ✅ Heure du dernier message
             Text(
-              "Disponible",
-              style: TextStyle(
-                color: HexColor("#16A34A"),
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
+              heure,
+              style: const TextStyle(
+                color: Colors.black45,
+                fontSize: 12,
               ),
             ),
           ],
@@ -216,4 +170,3 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
     );
   }
 }
-
