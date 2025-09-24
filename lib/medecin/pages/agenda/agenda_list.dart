@@ -69,7 +69,7 @@ class _ListPageState extends State<ListPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Color(0xFF1E40AF)),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
             ),
@@ -78,15 +78,26 @@ class _ListPageState extends State<ListPage> {
           Expanded(child: _buildAppointmentsList()),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1E40AF),
+     floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const NouveauRendezVousPage()),
-          );
+          
+          // Action à définir
         },
-        child: const Icon(Icons.add, color: Colors.white),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [HexColor('#2563EB'), HexColor('#1D4ED8')],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }
@@ -210,7 +221,7 @@ class _ListPageState extends State<ListPage> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade400, // gris désactivé
+                  backgroundColor: const Color.fromARGB(255, 228, 170, 170), // gris désactivé
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

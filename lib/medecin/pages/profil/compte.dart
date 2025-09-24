@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rmelapp/medecin/pages/affiliation.dart';
 import '../../utils/HexColor.dart';
 import 'info_personnel.dart';
+
 class DocteurCompte extends StatefulWidget {
   const DocteurCompte({super.key});
 
@@ -15,14 +16,14 @@ class _DocteurCompteState extends State<DocteurCompte> {
   @override
   Widget build(BuildContext context) {
     final double headerHeight = 180;
-    final double overlap = 60; // combien le container recouvre le header
+    final double overlap = 70;
 
     return Scaffold(
       backgroundColor: HexColor('#F5F7FA'),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header bleu
+            // Header
             Container(
               height: headerHeight,
               width: double.infinity,
@@ -33,14 +34,13 @@ class _DocteurCompteState extends State<DocteurCompte> {
                   bottomRight: Radius.circular(28),
                 ),
               ),
-              child: SafeArea(
-                child: Align(
-                  alignment:const Alignment(0, -0.9),
-                  child: const Text(
+              child: const SafeArea(
+                child: Center(
+                  child: Text(
                     'Mon compte',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -48,98 +48,97 @@ class _DocteurCompteState extends State<DocteurCompte> {
               ),
             ),
 
-            // Container blanc chevauchant le header
+            // Container blanc qui chevauche le header
             Transform.translate(
               offset: Offset(0, -overlap),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 15,
                       offset: const Offset(0, 6),
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
                 child: Column(
                   children: [
-                    // Avatar
-                    ClipOval(
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        color: HexColor('#EEF2F6'),
+                    // Avatar avec bordure
+                    Container(
+                      width: 90,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: HexColor('#E0E6ED'),
+                          width: 3,
+                        ),
+                      ),
+                      child: ClipOval(
                         child: Image.asset(
                           'assets/icons/avatar.png',
                           fit: BoxFit.cover,
-                          
-                          
-                          
-                          ),
                         ),
                       ),
-                  
-                    const SizedBox(height: 12),
-                     Text(
+                    ),
+
+                    const SizedBox(height: 14),
+                    Text(
                       'Dr Lamine Ndiaye',
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: HexColor('#2F3542')
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: HexColor('#2F3542'),
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       'Cardiologue',
                       style: TextStyle(
                         fontSize: 16,
+                        fontWeight: FontWeight.w400,
                         color: HexColor('#747D8C'),
                       ),
                     ),
 
-                    const SizedBox(height: 20),
-                    Divider(height: 1, color: Colors.grey.shade100),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 24),
+                    Divider(height: 1, color: Colors.grey.shade200),
 
                     // Informations personnelles
                     _buildOptionItem(
                       iconAsset: 'assets/icons/ic_infi.png',
                       title: 'Informations personnelles',
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey,
-                        size: 40,
-                      ),
+                      trailing: const Icon(Icons.chevron_right,
+                          color: Colors.grey, size: 28),
                       onTap: () {
-                         Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const InformationsPersonnellesPage(),
-      ),
-    );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const InformationsPersonnellesPage(),
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 1, color: Colors.grey.shade200),
 
-                     _buildOptionItem(
+                    // Affiliations
+                    _buildOptionItem(
                       iconAsset: 'assets/icons/ic_infi.png',
-                      title: 'Informations personnelles',
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey,
-                        size: 40,
-                      ),
+                      title: 'Affiliations',
+                      trailing: const Icon(Icons.chevron_right,
+                          color: Colors.grey, size: 28),
                       onTap: () {
-                         Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const DisponibilitePage(),
-      ),
-    );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DisponibilitePage(),
+                          ),
+                        );
                       },
                     ),
                     Divider(height: 1, color: Colors.grey.shade200),
@@ -147,7 +146,6 @@ class _DocteurCompteState extends State<DocteurCompte> {
                     // Notifications
                     _buildOptionItem(
                       iconAsset: 'assets/icons/notif.png',
-                      
                       title: 'Notifications',
                       trailing: Switch(
                         value: notificationsEnabled,
@@ -158,27 +156,29 @@ class _DocteurCompteState extends State<DocteurCompte> {
                     ),
                     Divider(height: 1, color: Colors.grey.shade200),
 
-                    // Se déconnecter
+                    // Déconnexion
                     InkWell(
                       onTap: () => _showLogoutConfirm(context),
                       child: Container(
-                        width: double.infinity,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 14),
+                            horizontal: 4, vertical: 14),
                         child: Row(
                           children: [
                             CircleAvatar(
                               radius: 18,
                               backgroundColor: HexColor('#FEF3F2'),
-                              child: Icon(Icons.logout,
-                                  size: 18, color: HexColor('#FF3B30')),
+                              child: Icon(
+                                Icons.logout,
+                                size: 18,
+                                color: HexColor('#FF3B30'),
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Text(
                               'Se déconnecter',
                               style: TextStyle(
-                                color: HexColor('#FF6B6B'),
-                                fontSize: 15,
+                                color: HexColor('#FF3B30'),
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

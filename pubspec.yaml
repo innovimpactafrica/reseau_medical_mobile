@@ -138,6 +138,15 @@ flutter:
       - assets/icons/programme.png
       - assets/icons/proicons.png
       - assets/icons/dispo.png
+      - assets/icons/heure.png
+      - assets/icons/doc.svg
+      - assets/icons/ecris.png
+      - assets/icons/fileedit.png
+      - assets/icons/histor.png
+      - assets/icons/medic.png
+      - assets/icons/plus.png
+      - assets/icons/print.png
+      - assets/icons/rendu.png
   
 
 

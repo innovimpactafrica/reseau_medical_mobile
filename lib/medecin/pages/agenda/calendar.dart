@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rmelapp/medecin/pages/agenda/nouveau_rdv.dart';
 import 'package:rmelapp/medecin/utils/HexColor.dart';
 import 'agenda_list.dart'; // Assure-toi que ce fichier existe bien
 
@@ -148,6 +149,11 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) =>  NouveauRendezVousPage()),
+      
+          );
           // Action à définir
         },
         elevation: 0,

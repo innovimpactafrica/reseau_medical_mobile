@@ -20,33 +20,21 @@ class ChatPage extends StatelessWidget {
         backgroundColor: HexColor("#305579"),
         elevation: 0,
         titleSpacing: 0,
-        title: Row(
-          children: [
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  patientName, // ✅ Nom dynamique
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Center(
+          child: Text(
+            patientName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
             ),
-          ],
+          ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.call, color: Colors.white),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.videocam, color: Colors.white),
-          ),
           IconButton(
             icon: Image.asset('assets/icons/filepa.png'),
             onPressed: () {
@@ -58,13 +46,15 @@ class ChatPage extends StatelessWidget {
               );
             },
           ),
+          // Pour équilibrer la taille du leading, un SizedBox vide
+          const SizedBox(width: 48),
         ],
       ),
       body: Column(
         children: [
           const SizedBox(height: 12),
 
-          // ✅ Badge date centré
+          // Badge date centré
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
@@ -79,7 +69,7 @@ class ChatPage extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // ✅ Messages
+          // Messages
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -103,7 +93,7 @@ class ChatPage extends StatelessWidget {
             ),
           ),
 
-          // ✅ Champ de saisie
+          // Champ de saisie
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             color: Colors.white,
@@ -121,7 +111,7 @@ class ChatPage extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.attach_file, color: HexColor("#7C8BA0")),
+                  icon: Icon(Icons.attach_file, color: HexColor("#D4B036")),
                 ),
                 CircleAvatar(
                   radius: 20,
@@ -136,7 +126,7 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  /// ✅ Message envoyé
+  /// Message envoyé avec largeur max réduite
   Widget _buildSenderMessage({
     required String text,
     required String time,
@@ -146,7 +136,10 @@ class ChatPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Flexible(
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 0.7 *  MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width,
+            ),
             child: Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -177,7 +170,7 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  /// ✅ Message reçu
+  /// Message reçu avec largeur max réduite
   Widget _buildReceiverMessage({
     required String initials,
     required String text,
@@ -197,7 +190,10 @@ class ChatPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Flexible(
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 0.7 * MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width,
+            ),
             child: Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

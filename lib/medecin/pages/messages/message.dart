@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/HexColor.dart';
-import 'apercu_message.dart'; // ✅ On importe ta page de discussion
+import 'apercu_message.dart';
 
 class Message extends StatefulWidget {
   const Message({super.key});
@@ -31,62 +31,85 @@ class _MessageState extends State<Message> {
     },
   ];
 
+  String searchQuery = "";
+
   @override
   Widget build(BuildContext context) {
+    // Filtrer la liste selon la recherche
+    List<Map<String, String>> filteredMedecins = medecins.where((med) {
+      return med["name"]!.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+
     return Scaffold(
       backgroundColor: HexColor('#F9FAFB'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ✅ Header bleu avec flèche retour
+          // Header avec titre aligné à gauche et flèche retour (tu peux réactiver la flèche si besoin)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 60, 12, 20),
             color: HexColor("#305579"),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const Expanded(
-                  child: Text(
-                    "Choisir un patient",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 48), // équilibre la flèche gauche
-              ],
+            child: const Text(
+              "Messages",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
 
-          // ✅ Contenu principal
+          // Barre de recherche
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Rechercher un médecin',
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+            ),
+          ),
+
+          // Liste des cards réduite en largeur, centrée horizontalement
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(bottom: 16),
               child: Column(
-                children: medecins.map((med) {
-                  return _buildMedecinCard(
-                    initials: med["initials"]!,
-                    name: med["name"]!,
-                    heure: med["heure"]!,
-                    chat: med["chat"]!,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ChatPage(
-                            patientName: med["name"]!,
-                            initials: med["initials"]!,
-                          ),
-                        ),
-                      );
-                    },
+                children: filteredMedecins.map((med) {
+                  return Center(  // Centrer horizontalement la card
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,  // 90% de la largeur écran
+                      child: _buildMedecinCard(
+                        initials: med["initials"]!,
+                        name: med["name"]!,
+                        heure: med["heure"]!,
+                        chat: med["chat"]!,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ChatPage(
+                                patientName: med["name"]!,
+                                initials: med["initials"]!,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 }).toList(),
               ),
@@ -97,7 +120,6 @@ class _MessageState extends State<Message> {
     );
   }
 
-  // ✅ Widget Card médecin
   Widget _buildMedecinCard({
     required String initials,
     required String name,
@@ -117,7 +139,6 @@ class _MessageState extends State<Message> {
         ),
         child: Row(
           children: [
-            // ✅ Avatar avec initiales
             CircleAvatar(
               radius: 22,
               backgroundColor: HexColor("#E9EFFD"),
@@ -130,8 +151,6 @@ class _MessageState extends State<Message> {
               ),
             ),
             const SizedBox(width: 12),
-
-            // ✅ Infos médecin
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,8 +174,6 @@ class _MessageState extends State<Message> {
                 ],
               ),
             ),
-
-            // ✅ Heure du dernier message
             Text(
               heure,
               style: const TextStyle(

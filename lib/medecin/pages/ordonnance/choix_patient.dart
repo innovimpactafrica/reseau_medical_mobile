@@ -10,34 +10,30 @@ class ChoisirPatient extends StatefulWidget {
 }
 
 class _ChoisirPatientState extends State<ChoisirPatient> {
-  
-
-  
-
-  final List<Map<String, String>> medecins = [
+  final List<Map<String, String>> patients = [
     {
       "initials": "LD",
       "name": "Lamine Diop",
-      "age": "38ans",
-      "sexe": "Homme"
+      "age": "38 ans",
+      "sexe": "Homme",
     },
     {
       "initials": "AD",
       "name": "Amadou Diallo",
-      "age": "45ans",
-      "sexe": "Homme"
+      "age": "45 ans",
+      "sexe": "Homme",
     },
     {
       "initials": "OS",
       "name": "Ousmane Sarr",
-      "age": "62ans",
-      "sexe": "Homme"
+      "age": "62 ans",
+      "sexe": "Homme",
     },
     {
       "initials": "FN",
       "name": "Fatou Ndiaye",
-      "age": "29ans",
-      "sexe": "Femme"
+      "age": "29 ans",
+      "sexe": "Femme",
     },
   ];
 
@@ -45,11 +41,10 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor('#F9FAFB'),
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ✅ Header bleu avec flèche retour
+          // ✅ Header bleu
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 60, 12, 20),
@@ -71,7 +66,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 48), // équilibre la flèche gauche
+                const SizedBox(width: 48),
               ],
             ),
           ),
@@ -83,24 +78,23 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ✅ Barre de recherche
+                  // ✅ Barre de recherche (fond blanc)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       border: Border.all(color: HexColor('#DBEAFE')),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
-                      children:  [
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Expanded(
+                      children: [
+                        const Icon(Icons.search, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        const Expanded(
                           child: TextField(
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText:
-                                  "Rechercher un patient",
-                              hintStyle: TextStyle(color:HexColor('#CCCCCC')),
+                              hintText: "Rechercher un patient",
                             ),
                           ),
                         ),
@@ -109,24 +103,23 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                   ),
                   const SizedBox(height: 16),
 
-
-                  // ✅ Liste des médecins
-                 Column(
-  children: medecins.map((med) {
-    return _buildMedecinCard(
-      initials: med["initials"]!,
-      name: med["name"]!,
-      specialite: med["specialite"]!,
-      lieu: med["lieu"]!,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => NewOrdonnancePage(
-              doctorName: med["name"]!,
-              specialty: med["age"]!,
-              clinic: med["sexe"]!,
-              initials: med["initials"]!,
+                  // ✅ Liste patients
+                  Column(
+                    children: patients.map((pat) {
+                      return _buildPatientCard(
+                        initials: pat["initials"]!,
+                        name: pat["name"]!,
+                        age: pat["age"]!,
+                        sexe: pat["sexe"]!,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NewOrdonnancePage(
+                                doctorName: pat["name"]!,
+                                specialty: pat["age"]!,
+                                clinic: pat["sexe"]!,
+                                initials: pat["initials"]!,
                               ),
                             ),
                           );
@@ -143,55 +136,70 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
     );
   }
 
-  // ✅ Widget Card médecin
-  Widget _buildMedecinCard({
+  // ✅ Card patient (réduite et dispo à droite du nom)
+  Widget _buildPatientCard({
     required String initials,
     required String name,
-    required String specialite,
-    required String lieu,
+    required String age,
+    required String sexe,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(10), // 🔹 Réduction padding
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(color: HexColor("#DBEAFE")),
         ),
         child: Row(
           children: [
-            // ✅ Avatar avec initiales
+            // ✅ Avatar plus petit
             CircleAvatar(
-              radius: 22,
+              radius: 18, // 🔹 Réduction taille
               backgroundColor: HexColor("#E9EFFD"),
               child: Text(
                 initials,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                   color: HexColor("#2563EB"),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
 
-            // ✅ Infos médecin
+            // ✅ Infos patient
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
+                  // Nom + Disponible sur la même ligne
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        "Disponible",
+                        style: TextStyle(
+                          color: HexColor("#16A34A"),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
-                    "$specialite  •  $lieu",
+                    "$age  •  $sexe",
                     style: const TextStyle(
                       color: Colors.black54,
                       fontSize: 12,
@@ -200,20 +208,9 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                 ],
               ),
             ),
-
-            // ✅ Disponible
-            Text(
-              "Disponible",
-              style: TextStyle(
-                color: HexColor("#16A34A"),
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 }
-
