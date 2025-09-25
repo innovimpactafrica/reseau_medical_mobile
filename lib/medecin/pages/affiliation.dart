@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:rmelapp/medecin/widgets/add_disponibilite_modal.dart';
+import '../models/centre_modal.dart';
+import '../widgets/centre_card.dart';
+import '../widgets/centre_details_modal.dart';
+import '../utils/HexColor.dart';
 
 class DisponibilitePage extends StatefulWidget {
   const DisponibilitePage({Key? key}) : super(key: key);
@@ -9,24 +14,90 @@ class DisponibilitePage extends StatefulWidget {
 
 class _DisponibilitePageState extends State<DisponibilitePage> {
   final TextEditingController _searchController = TextEditingController();
+  Centre? _selectedCentre; // Centre sélectionné pour la modale
 
-  List<Map<String, dynamic>> centres = [
-    {
-      "name": "Centre Médical Saint-Louis",
-      "address": "123 Avenue Léopold Sédar Senghor, Saint-Louis",
-      "active": true,
-    },
-    {
-      "name": "Clinique des Almadies",
-      "address": "45 Route des Almadies, Dakar",
-      "active": false,
-    },
-    {
-      "name": "Hôpital Principal de Dakar",
-      "address": "Avenue Nelson Mandela, Dakar",
-      "active": true,
-    },
+  List<Centre> centres = [
+    Centre(
+      name: "Centre Médical Saint-Louis",
+      address: "123 Avenue Léopold Sédar Senghor, Saint-Louis",
+      active: true,
+      disponibilites: [
+        Disponibilite(
+          centreName: "Centre Médical Saint-Louis",
+          jour: "Mardi",
+          heureDebut: "09:00",
+          heureFin: "17:00",
+          dureeConsultation: "45min",
+        ),
+        Disponibilite(
+          centreName: "Centre Médical Saint-Louis",
+          jour: "Jeudi",
+          heureDebut: "09:00",
+          heureFin: "17:00",
+          dureeConsultation: "45min",
+        ),
+      ],
+    ),
+    Centre(
+      name: "Clinique des Almadies",
+      address: "45 Route des Almadies, Dakar",
+      active: false,
+      disponibilites: [],
+    ),
+    Centre(
+      name: "Hôpital Principal de Dakar",
+      address: "Avenue Nelson Mandela, Dakar",
+      active: true,
+      disponibilites: [],
+    ),
   ];
+
+  /// Ouvre la modale des détails d’un centre
+  void _openDetailsModal(Centre centre) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => CentreDetailsModal(
+        centre: centre,
+        onUpdate: () => setState(() {}),
+      ),
+    );
+  }
+
+  /// Ouvre la modale d’ajout de disponibilité
+  void _showAddDisponibiliteModal(BuildContext context, String centreName) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => AddDisponibiliteModal(
+        centreName: centreName,
+        onSave: (jour, debut, fin, duree) {
+          // Ici on peut ajouter la dispo au centre
+          print("Nouvelle dispo: $jour, $debut - $fin, durée $duree");
+          Navigator.pop(context);
+        },
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (centres.isNotEmpty) {
+      _selectedCentre = centres[0]; // sélection automatique du premier centre
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +113,7 @@ class _DisponibilitePageState extends State<DisponibilitePage> {
         title: const Text(
           "Affiliations",
           style: TextStyle(
+            fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
@@ -51,7 +123,6 @@ class _DisponibilitePageState extends State<DisponibilitePage> {
       body: Column(
         children: [
           const SizedBox(height: 10),
-          // Champ de recherche
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -61,19 +132,15 @@ class _DisponibilitePageState extends State<DisponibilitePage> {
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
               ),
-              onChanged: (value) {
-                setState(() {});
-              },
+              onChanged: (value) => setState(() {}),
             ),
           ),
           const SizedBox(height: 16),
-          // Liste des centres
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -81,82 +148,24 @@ class _DisponibilitePageState extends State<DisponibilitePage> {
               itemBuilder: (context, index) {
                 final centre = centres[index];
                 if (_searchController.text.isNotEmpty &&
-                    !centre["name"]
+                    !centre.name
                         .toLowerCase()
                         .contains(_searchController.text.toLowerCase())) {
                   return const SizedBox.shrink();
                 }
 
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE8F0FE),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.apartment,
-                          color: Color(0xFF1E4777),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              centre["name"],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              centre["address"],
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            centre["active"] ? "Actif" : "Inactif",
-                            style: TextStyle(
-                              color: centre["active"]
-                                  ? Colors.green
-                                  : Colors.red,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                          Switch(
-                            value: centre["active"],
-                            onChanged: (val) {
-                              setState(() {
-                                centre["active"] = val;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                return GestureDetector(
+                  onTap: () {
+                    _selectedCentre = centre;
+                    _openDetailsModal(centre);
+                  },
+                  child: CentreCard(
+                    centre: centre,
+                    onToggleActive: (bool value) {
+                      setState(() {
+                        centre.active = value;
+                      });
+                    },
                   ),
                 );
               },
@@ -165,11 +174,29 @@ class _DisponibilitePageState extends State<DisponibilitePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1E4777),
-        onPressed: () {
-          // Action pour ajouter un nouveau centre
-        },
-        child: const Icon(Icons.add, size: 30),
+        onPressed: _selectedCentre != null
+            ? () =>
+                _showAddDisponibiliteModal(context, _selectedCentre!.name)
+            : null,
+        elevation: 0,
+        backgroundColor: _selectedCentre != null
+            ? Colors.transparent
+            : Colors.grey[400],
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: _selectedCentre != null
+                ? LinearGradient(
+                    colors: [HexColor('#2563EB'), HexColor('#1D4ED8')],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }

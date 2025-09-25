@@ -37,11 +37,19 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    // sécurité : s'assurer que l'index est dans l'intervalle (au cas où)
+    final currentTabIndex = (_tabController.index >= 0 && _tabController.index < 4) ? _tabController.index : 0;
+
     return Scaffold(
       backgroundColor: lightGreyBg,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        // icône de retour blanche (demandée)
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -52,16 +60,17 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
           ),
         ),
         title: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
+          padding: const EdgeInsets.only(left: 0),
+          child: const Text(
             "Détails Patient",
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 32,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
+        // je conserve l'ancienne action si tu en avais besoin
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert, color: Colors.white),
@@ -73,7 +82,7 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
       ),
       body: Column(
         children: [
-          // Section photo + nom + ID
+          // Section photo + nom + ID (conservée)
           Container(
             color: HexColor('#F2F5FA'),
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -99,7 +108,7 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
             ),
           ),
 
-          // Onglets personnalisés
+          // Onglets personnalisés (modification : plus d'ovale plein, juste trait rouge)
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -107,35 +116,43 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(4, (index) {
                 final titles = ["Info", "Historiques", "Documents", "RDV"];
-                final isSelected = _tabController.index == index;
+                final isSelected = currentTabIndex == index;
                 return Expanded(
                   child: GestureDetector(
                     onTap: () => _tabController.animateTo(index),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: isSelected ? redActive.withOpacity(0.1) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(50),
-                        border: isSelected ? Border.all(color: redActive, width: 2) : null,
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        titles[index],
-                        style: TextStyle(
-                          color: isSelected ? redActive : greyInactive,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                    behavior: HitTestBehavior.opaque,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            titles[index],
+                            style: TextStyle(
+                              color: isSelected ? redActive : greyInactive,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
-                      ),
+                        // trait rouge uniquement pour l'onglet sélectionné
+                        Container(
+                          height: 3,
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: isSelected ? redActive : Colors.transparent,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
               }),
             ),
           ),
-          // Contenu des onglets
+
+          // Contenu des onglets (conservé, avec ajustements demandés)
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -164,7 +181,6 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
               _infoRow("Date de naissance", "10/10/1960"),
               _infoRow("Sexe", "Masculin"),
               _infoRow("Adresse", "Sacré Cœur"),
-              
               _infoRow("Maladie", "Aucune"),
             ],
           ),
@@ -174,15 +190,15 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
             children: [
               _infoRow("Numéro dossier", "ID: 123456"),
               _infoRow("Couverture sociale", "Lorem"),
-              
             ],
           ),
           const SizedBox(height: 16),
           _infoSection(
             title: "Informations médicales",
             children: [
-              _infoRow("", ""),
-              
+              // tu peux ajouter ici les lignes médicales supplémentaires
+              _infoRow("Allergies", "Aucune"),
+              _infoRow("Groupe sanguin", "O+"),
             ],
           ),
         ],
@@ -225,59 +241,65 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _historiqueSection(
+          // Antécédents médicaux (titre + items conservés, items modifiés pour titre/date sur même ligne)
+          _historiqueSectionWithIcon(
             title: "Antécédents médicaux",
             iconPath: 'assets/icons/medic.png',
             actionLabel: "Modifier",
             items: [
+              // chaque item : title + date sur la même ligne (date à droite), description en dessous
               _historyItem(
-                
                 date: "Octobre 2022",
                 title: "Diagnostic d'hypertension",
                 description: "Tension artérielle 150/95 mmHg",
+                mode: "medical",
               ),
               _historyItem(
-                
                 date: "Mars 2021",
                 title: "Appendicectomie",
                 description: "Intervention sans complications",
+                mode: "medical",
               ),
-               _historyItem(
-                
+              _historyItem(
                 date: "Janvier 2020",
                 title: "Fracture du poignet droit",
-                description: "Suite a une chute,platre pendant 6 semaines",
+                description: "Suite à une chute, plâtre pendant 6 semaines",
+                mode: "medical",
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _historiqueSection(
+
+          // Antécédents familiaux (title à gauche, description (âge) sur la même ligne à droite)
+          _historiqueSectionWithIcon(
             title: "Antécédents familiaux",
             iconPath: 'assets/icons/antec.png',
             actionLabel: "Modifier",
             items: [
               _historyItem(
-              
-                date: "Père",
-                title: "Hypertension, Diabète type 2",
+                date: "", // non utilisé dans ce mode
+                title: "Père : Hypertension, Diabète",
                 description: "Âge : 65 ans",
+                mode: "family",
               ),
               _historyItem(
-                
-                date: "Mère",
-                title: "Cancer du sein (rémission)",
+                date: "",
+                title: "Mère : Cancer du sein (rémission)",
                 description: "Âge : 62 ans",
+                mode: "family",
               ),
               _historyItem(
-                
-                date: "Frere",
-                title: "Asthme",
+                date: "",
+                title: "Frère : Asthme",
                 description: "Âge : 42 ans",
+                mode: "family",
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _historiqueSection(
+
+          // Historique des consultations (conservé ; icônes alignées à droite sous le texte)
+          _historiqueSectionWithIcon(
             title: "Historique des consultations",
             iconPath: 'assets/icons/cons.png',
             actionLabel: "Ajouter",
@@ -288,18 +310,21 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
                 description:
                     "Patiente se présente pour son suivi trimestriel d'hypertension. Tension artérielle sous contrôle avec le traitement actuel. Pas d'effets secondaires signalés. Maintien du traitement actuel.",
               ),
+              // tu peux ajouter d'autres consultations ici si besoin
             ],
           ),
           const SizedBox(height: 20),
+
+          // Boutons (création + liste) - conservés
           _buttonPrimaryWithImage(text: "Créer un compte rendu", icon: Image.asset('assets/icons/fileedit.png')),
           const SizedBox(height: 8),
-          _buttonSecondary(text: "Listez les comptes rendus", icon: Image.asset('rendu.png')),
+          _buttonSecondary(text: "Listez les comptes rendus", icon: Image.asset('assets/icons/rendu.png')),
         ],
       ),
     );
   }
 
-  Widget _historiqueSection({
+  Widget _historiqueSectionWithIcon({
     required String title,
     required String iconPath,
     required String actionLabel,
@@ -329,7 +354,63 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
     );
   }
 
-  Widget _historyItem({ required String date, required String title, required String description}) {
+  // history item polyvalent (modes : "medical", "family", fallback)
+  Widget _historyItem({
+    required String date,
+    required String title,
+    required String description,
+    String mode = "medical",
+  }) {
+    // Mode médical : title (gauche) + date (droite) sur la même ligne, description en dessous
+    if (mode == "medical") {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                ),
+                const SizedBox(width: 8),
+                Text(date, style: const TextStyle(color: Colors.black54, fontSize: 13)),
+              ],
+            ),
+            if (description.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(description, style: const TextStyle(color: Colors.black54, fontSize: 13)),
+            ],
+          ],
+        ),
+      );
+    }
+
+    // Mode family : title (gauche) + description (âge) sur la même ligne
+    if (mode == "family") {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            Expanded(child: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14))),
+            const SizedBox(width: 8),
+            Text(description, style: const TextStyle(color: Colors.black54, fontSize: 13)),
+          ],
+        ),
+      );
+    }
+
+    // fallback : ancien style (au cas où)
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
@@ -337,102 +418,87 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade300),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(date, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Color(0xFF64B5F6),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  decoration: TextDecoration.underline,
-                ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(date, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF64B5F6),
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                decoration: TextDecoration.underline,
               ),
-              const SizedBox(height: 4),
-              Text(description, style: const TextStyle(color: Colors.black54, fontSize: 13)),
-            ]),
-          ),
-        ],
-      ),
+            ),
+            const SizedBox(height: 4),
+            Text(description, style: const TextStyle(color: Colors.black54, fontSize: 13)),
+          ]),
+        ),
+      ]),
     );
   }
+
   // --------- ONGLET DOCUMENTS ---------
   Widget _buildDocumentsTab() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Titre
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              "Documents du patient",
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: blueSectionTitle,
-              ),
+          Text(
+            "Documents du patient",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: blueSectionTitle,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // Filtres onglets ovales
-          Container(
-            height: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE5E7EB),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: List.generate(docTabs.length, (index) {
-                final selected = _docTabIndex == index;
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _docTabIndex = index),
-                    child: Container(
-                      margin: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: selected ? redActive : Colors.transparent,
-                        borderRadius: BorderRadius.circular(50),
+          // Filtres onglets alignés sur la même ligne (séparés)
+          Row(
+            children: List.generate(docTabs.length, (index) {
+              final selected = _docTabIndex == index;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _docTabIndex = index),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: selected ? redActive : Colors.transparent, width: 2),
                       ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        docTabs[index],
-                        style: TextStyle(
-                          color: selected ? Colors.white : Colors.black87,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      docTabs[index],
+                      style: TextStyle(
+                        color: selected ? redActive : Colors.black87,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                );
-              }),
-            ),
+                ),
+              );
+            }),
           ),
-
           const SizedBox(height: 16),
 
-          // Liste des documents
+          // Liste des documents (tous dans le même container)
           _documentItem("Ordonnance", "15 Janvier 2023", iconPath: 'assets/icons/doc.svg'),
           _documentItem("Compte rendu", "12 Février 2023", iconPath: 'assets/icons/doc.svg'),
           _documentItem("Consultation initiale", "05 Mars 2023", iconPath: 'assets/icons/doc.svg'),
+          const SizedBox(height: 8),
 
-          const Spacer(),
-
-          
-        ],
+          // si tu veux un bouton ici, on peut le remettre ; je garde la structure (tu avais un Spacer avant)
+        ]),
       ),
     );
   }
@@ -458,6 +524,7 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
       ),
     );
   }
+
   // --------- ONGLET RDV ---------
   Widget _buildRdvTab() {
     return Padding(
@@ -483,29 +550,26 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
           ),
           const SizedBox(height: 16),
 
-          // Liste des RDVs
+          // Liste des RDVs (conservée)
           _rdvItem(
             iconPath: 'assets/icons/frame5.svg',
             title: "Consultation",
             datetime: "Sam. 13 septembre 2025, 10:00 - 12:00",
-            
           ),
           _rdvItem(
             iconPath: 'assets/icons/frame5.svg',
             title: "Suivi patient",
             datetime: "Lun. 15 septembre 2025, 14:00 - 15:00",
-            
           ),
           _rdvItem(
             iconPath: 'assets/icons/frame5.svg',
             title: "Consultation",
             datetime: "Lun. 15 septembre 2025, 16:00 - 17:00",
-            
           ),
 
           const Spacer(),
 
-          _buttonPrimaryWithImage(text: "Ajouter un rendez-vous",icon:Image.asset('assets/icons/plus.png')),
+          _buttonPrimaryWithImage(text: "Ajouter un rendez-vous", icon: Image.asset('assets/icons/plus.png')),
         ],
       ),
     );
@@ -513,7 +577,6 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
 
   Widget _rdvItem({
     required String iconPath,
-    
     required String title,
     required String datetime,
   }) {
@@ -558,11 +621,11 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
             color: Colors.grey.shade300,
           ),
           const SizedBox(width: 14),
-          
         ],
       ),
     );
   }
+
   // --------- ITEM Consultation (Historique) ---------
   Widget _consultationItem({required String date, required String doctor, required String description}) {
     return Container(
@@ -582,31 +645,39 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
         ),
         const SizedBox(height: 8),
         Text(description, style: const TextStyle(color: Colors.black87, fontSize: 13)),
+        const SizedBox(height: 8),
+        // Trois icônes alignées à droite (demandé)
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Icon(Icons.edit, color: blueLight, size: 20),
+          const SizedBox(width: 12),
+          Icon(Icons.delete, color: Colors.redAccent, size: 20),
+          const SizedBox(width: 12),
+          Icon(Icons.share, color: blueDark, size: 20),
+        ]),
       ]),
     );
   }
 
   // --------- Bouton principal ---------
- Widget _buttonPrimaryWithImage({required String text, required Widget icon}) {
-  return ElevatedButton.icon(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      backgroundColor: redActive,
-      foregroundColor: Colors.white,
-      minimumSize: const Size(double.infinity, 48),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    ),
-    icon: icon,
-    label: Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-    ),
-  );
-}
-
+  Widget _buttonPrimaryWithImage({required String text, required Widget icon}) {
+    return ElevatedButton.icon(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: redActive,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      icon: icon,
+      label: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+      ),
+    );
+  }
 
   // --------- Bouton secondaire ---------
- Widget _buttonSecondary({required String text, required Widget icon}) {
+  Widget _buttonSecondary({required String text, required Widget icon}) {
     return OutlinedButton.icon(
       onPressed: () {},
       style: OutlinedButton.styleFrom(

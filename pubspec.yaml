@@ -114,7 +114,7 @@ flutter:
       - assets/icons/piece.svg
       - assets/icons/Address.svg
       - assets/icons/Cinema.png
-      - assets/icons/Clipboard.svg
+    
       - assets/icons/Customer.svg
       - assets/icons/Depression.svg
       - assets/icons/frame.svg
@@ -147,6 +147,7 @@ flutter:
       - assets/icons/plus.png
       - assets/icons/print.png
       - assets/icons/rendu.png
+      - assets/icons/afil.png
   
 
 

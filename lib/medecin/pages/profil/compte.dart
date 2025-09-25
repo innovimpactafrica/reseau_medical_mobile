@@ -241,7 +241,7 @@ class _DocteurCompteState extends State<DocteurCompte> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), 
         title: const Text('Se déconnecter'),
         content: const Text('Voulez-vous vraiment vous déconnecter ?'),
         actions: [
