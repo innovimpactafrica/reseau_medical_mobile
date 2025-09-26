@@ -117,7 +117,7 @@ flutter:
     
       - assets/icons/Customer.svg
       - assets/icons/Depression.svg
-      - assets/icons/frame.svg
+      - assets/icons/frame.png
       - assets/icons/frame1.svg
       - assets/icons/frame2.svg
       - assets/icons/frame3.svg
@@ -148,6 +148,9 @@ flutter:
       - assets/icons/print.png
       - assets/icons/rendu.png
       - assets/icons/afil.png
+      - assets/icons/cons.png
+      - assets/icons/antec.png
+      - assets/icons/send.png
   
 
 
