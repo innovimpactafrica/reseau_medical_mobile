@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rmelapp/medecin/utils/HexColor.dart';
 
 class AddDisponibiliteModal extends StatefulWidget {
   final String centreName;
@@ -20,8 +21,8 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
   late TextEditingController _startTimeController;
   late TextEditingController _endTimeController;
 
-  String selectedJour = 'Lundi';
-  String selectedDuree = '15 min';
+  String? selectedJour;
+  String? selectedDuree;
 
   final List<String> jours = [
     'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'
@@ -57,11 +58,48 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
     );
 
     if (picked != null) {
-      final formatted = picked.hour.toString().padLeft(2, '0') + ":" + picked.minute.toString().padLeft(2, '0');
+      final formatted = picked.hour.toString().padLeft(2, '0') +
+          ":" +
+          picked.minute.toString().padLeft(2, '0');
       setState(() {
         controller.text = formatted;
       });
     }
+  }
+
+  InputDecoration _inputDecoration({Widget? suffixIcon}) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(color: HexColor('#D1D5DB')),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(color: HexColor('#1E4777'), width: 1.5),
+      ),
+      suffixIcon: suffixIcon,
+    );
+  }
+
+  InputDecoration _dropdownDecoration() {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(color: HexColor('#D1D5DB')),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(color: HexColor('#1E4777'), width: 1.5),
+      ),
+    );
   }
 
   @override
@@ -96,7 +134,7 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
               children: [
                 const Text(
                   'Ajouter une disponibilité',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close),
@@ -104,14 +142,13 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
 
-            // Centre (non modifiable)
-            const Align(
+            // Centre
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Centre de santé',
+              child: const Text(
+                'Centre',
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
             ),
@@ -119,9 +156,7 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
             DropdownButtonFormField<String>(
               value: widget.centreName,
               onChanged: null,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+              decoration: _dropdownDecoration(),
               items: [
                 DropdownMenuItem(
                   value: widget.centreName,
@@ -129,13 +164,12 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
                 )
               ],
             ),
-
             const SizedBox(height: 16),
 
             // Jour
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
+              child: const Text(
                 'Jour de la semaine',
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
@@ -143,36 +177,32 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               value: selectedJour,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+              hint: const Text('Sélectionner'),
+              decoration: _dropdownDecoration(),
               onChanged: (value) {
                 setState(() {
                   selectedJour = value!;
                 });
               },
-              items: jours.map((jour) => DropdownMenuItem(value: jour, child: Text(jour))).toList(),
+              items: jours
+                  .map((jour) => DropdownMenuItem(value: jour, child: Text(jour)))
+                  .toList(),
             ),
-
             const SizedBox(height: 16),
 
-            // Heures début & fin
+            // Heures
             Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Heure de début',
-                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
+                      const Text('Heure de début', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
                       const SizedBox(height: 6),
                       TextFormField(
                         controller: _startTimeController,
                         readOnly: true,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                        decoration: _inputDecoration(
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.access_time),
                             onPressed: () => _selectTime(_startTimeController),
@@ -187,16 +217,12 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Heure de fin',
-                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
+                      const Text('Heure de fin', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
                       const SizedBox(height: 6),
                       TextFormField(
                         controller: _endTimeController,
                         readOnly: true,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                        decoration: _inputDecoration(
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.access_time),
                             onPressed: () => _selectTime(_endTimeController),
@@ -208,23 +234,18 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
 
-            // Durée de consultation
-            const Align(
+            // Durée
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Durée de consultation',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-              ),
+              child: const Text('Durée de consultation', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
             ),
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               value: selectedDuree,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+              hint: const Text('Sélectionner'),
+              decoration: _dropdownDecoration(),
               onChanged: (value) {
                 setState(() {
                   selectedDuree = value!;
@@ -232,42 +253,43 @@ class _AddDisponibiliteModalState extends State<AddDisponibiliteModal> {
               },
               items: durees.map((duree) => DropdownMenuItem(value: duree, child: Text(duree))).toList(),
             ),
-
             const SizedBox(height: 24),
 
-            // Bouton Annuler
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: widget.onCancel,
-                child: const Text('Annuler'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  minimumSize: const Size(double.infinity, 48),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Bouton Enregistrer
+            // Boutons
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  widget.onSave(
-                    selectedJour,
-                    _startTimeController.text,
-                    _endTimeController.text,
-                    selectedDuree,
-                  );
-                  Navigator.pop(context);
+                  if (selectedJour != null && selectedDuree != null) {
+                    widget.onSave(
+                      selectedJour!,
+                      _startTimeController.text,
+                      _endTimeController.text,
+                      selectedDuree!,
+                    );
+                    Navigator.pop(context);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1E4777),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   minimumSize: const Size(double.infinity, 48),
                 ),
                 child: const Text('Enregistrer', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: widget.onCancel,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: BorderSide(color: HexColor('#DADADA')),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                child: const Text('Annuler'),
               ),
             ),
           ],

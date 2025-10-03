@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../../utils/HexColor.dart';
 import '../../ordonnance/new_ordonnance.dart';
+import '../details_pordonnance.dart'; // <-- Page à afficher
 
 class DocumentsTab extends StatefulWidget {
   final String doctorName;
   final String specialty;
   final String clinic;
   final String initials;
+  final String patientName;
 
   const DocumentsTab({
     Key? key,
@@ -14,6 +16,7 @@ class DocumentsTab extends StatefulWidget {
     required this.specialty,
     required this.clinic,
     required this.initials,
+    required this.patientName,
   }) : super(key: key);
 
   @override
@@ -49,7 +52,6 @@ class _DocumentsTabState extends State<DocumentsTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Titre
                     Text(
                       "Documents médicaux",
                       style: TextStyle(
@@ -70,9 +72,11 @@ class _DocumentsTabState extends State<DocumentsTab> {
                             label: Text(
                               filters[index],
                               style: TextStyle(
-                                fontSize: 12, // taille réduite
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: isSelected ? Colors.white : HexColor('#305579'),
+                                color: isSelected
+                                    ? Colors.white
+                                    : HexColor('#305579'),
                               ),
                             ),
                             selected: isSelected,
@@ -86,7 +90,6 @@ class _DocumentsTabState extends State<DocumentsTab> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            // Supprime l'icône par défaut
                             visualDensity: VisualDensity.compact,
                           ),
                         );
@@ -109,7 +112,6 @@ class _DocumentsTabState extends State<DocumentsTab> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
               children: [
-                // Bouton prescrire ordonnance
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -120,29 +122,28 @@ class _DocumentsTabState extends State<DocumentsTab> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewOrdonnancePage(
-                            doctorName: widget.doctorName,
-                            specialty: widget.specialty,
-                            clinic: widget.clinic,
-                            initials: widget.initials,
-                          ),
-                        ),
-                      );
-                    },
-                    icon:  Image.asset('assets/icons/fileedit.png'),
+                    icon: Image.asset('assets/icons/fileedit.png'),
                     label: const Text(
                       "Prescrire une ordonnance",
                       style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => NewOrdonnancePage(
+                            doctorName: widget.doctorName,
+                            specialty: widget.specialty,
+                            clinic: widget.clinic,
+                            initials: widget.initials,
+                            patientName: widget.patientName,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Bouton partager fiche
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -153,13 +154,13 @@ class _DocumentsTabState extends State<DocumentsTab> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () {
-                      // Logic de partage
-                    },
-                    icon: Image.asset('assets/icons/send.png', width: 20, height: 20),
+                    onPressed: () {},
+                    icon: Image.asset('assets/icons/send.png',
+                        width: 20, height: 20),
                     label: Text(
                       "Partager la fiche avec un medecin",
-                      style: TextStyle(color: HexColor('#B53C3A'), fontSize: 15),
+                      style:
+                          TextStyle(color: HexColor('#B53C3A'), fontSize: 15),
                     ),
                   ),
                 ),
@@ -172,51 +173,65 @@ class _DocumentsTabState extends State<DocumentsTab> {
   }
 
   Widget _documentItem(String title, String date) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F6FA),
-              borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      onTap: () {
+        // Redirection vers la page de détail
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrdonnanceDetailPage(
+              
             ),
-            child: Center(
-              child: Image.asset(
-                "assets/icons/frame.png",
-                width: 35,
-                height: 35,
-                fit: BoxFit.contain,
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F6FA),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Image.asset(
+                  "assets/icons/frame.png",
+                  width: 35,
+                  height: 35,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded( // ← Pour éviter overflow
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
-                  overflow: TextOverflow.ellipsis, // tronquer si trop long
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  date,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: 15),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    date,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

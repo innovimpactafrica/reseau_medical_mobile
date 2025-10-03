@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/HexColor.dart';
+import 'calendar.dart'; // <-- Assure-toi du chemin correct vers CalendarPage
 
 class NouveauRendezVousPage extends StatefulWidget {
   const NouveauRendezVousPage({super.key});
@@ -9,18 +10,9 @@ class NouveauRendezVousPage extends StatefulWidget {
 }
 
 class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
-  final _formKey = GlobalKey<FormState>();
-
-  String? _patient, _motif, _notes, _centre;
-  DateTime? _date;
-  TimeOfDay? _start, _end;
-
   final _dateController = TextEditingController();
   final _startController = TextEditingController();
   final _endController = TextEditingController();
-
-  final Color borderColor = HexColor("#285D90");
-  final Color hintTextColor = Colors.grey;
 
   @override
   void dispose() {
@@ -72,182 +64,176 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildLabel("Patient", required: true),
-                  TextFormField(
-                    decoration: _inputDecoration(
-                      hintText: "Rechercher un patient",
-                      iconPath: 'assets/icons/user.png',
-                    ),
-                    validator: _requiredValidator,
-                    onSaved: (v) => _patient = v,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLabel("Patient"),
+                TextFormField(
+                  decoration: _inputDecoration(
+                    hintText: "Rechercher un patient",
+                    iconPath: 'assets/icons/user.png',
+                    fillColor: Colors.white,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 16),
 
-                  _buildLabel("Date", required: true),
-                  TextFormField(
-                    controller: _dateController,
-                    readOnly: true,
-                    decoration: _inputDecoration(
-                      hintText: "jj/mm/aa",
-                      iconPath: 'assets/icons/agend.svg',
-                    ),
-                    validator: (_) {
-                      if (_date == null) return 'Ce champ est requis';
-                      return null;
-                    },
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime(2030),
-                      );
-                      if (picked != null) {
-                        setState(() {
-                          _date = picked;
-                          _dateController.text =
-                              "${picked.day}/${picked.month}/${picked.year}";
-                        });
-                      }
-                    },
+                _buildLabel("Date"),
+                TextFormField(
+                  controller: _dateController,
+                  readOnly: true,
+                  decoration: _inputDecoration(
+                    hintText: "jj/mm/aa",
+                    iconPath: 'assets/icons/rdv.png',
+                    fillColor: Colors.white,
                   ),
-                  const SizedBox(height: 20),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2030),
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _dateController.text =
+                            "${picked.day}/${picked.month}/${picked.year}";
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 20),
 
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildLabel("Heure de début"),
-                            TextFormField(
-                              controller: _startController,
-                              readOnly: true,
-                              decoration: _inputDecoration(
-                                hintText: "00:00",
-                                iconPath: 'assets/icons/heure.png',
-                              ),
-                              onTap: () async {
-                                final picked = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                );
-                                if (picked != null) {
-                                  setState(() {
-                                    _start = picked;
-                                    _startController.text =
-                                        picked.format(context);
-                                  });
-                                }
-                              },
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel("Heure de début"),
+                          TextFormField(
+                            controller: _startController,
+                            readOnly: true,
+                            decoration: _inputDecoration(
+                              hintText: "00:00",
+                              iconPath: 'assets/icons/heure.png',
+                              fillColor: Colors.white,
                             ),
-                          ],
-                        ),
+                            onTap: () async {
+                              final picked = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  _startController.text =
+                                      picked.format(context);
+                                });
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildLabel("Heure de fin"),
-                            TextFormField(
-                              controller: _endController,
-                              readOnly: true,
-                              decoration: _inputDecoration(
-                                hintText: "Fin",
-                                iconPath: 'assets/icons/heure.png',
-                              ),
-                              onTap: () async {
-                                final picked = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay.now(),
-                                );
-                                if (picked != null) {
-                                  setState(() {
-                                    _end = picked;
-                                    _endController.text =
-                                        picked.format(context);
-                                  });
-                                }
-                              },
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel("Heure de fin"),
+                          TextFormField(
+                            controller: _endController,
+                            readOnly: true,
+                            decoration: _inputDecoration(
+                              hintText: "Fin",
+                              iconPath: 'assets/icons/heure.png',
+                              fillColor: Colors.white,
                             ),
-                          ],
-                        ),
+                            onTap: () async {
+                              final picked = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  _endController.text =
+                                      picked.format(context);
+                                });
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  _buildLabel("Centre de santé", required: true),
-                  DropdownButtonFormField<String>(
-                    items: ["Hôpital A", "Clinique B", "Cabinet C"]
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                        .toList(),
-                    onChanged: (v) => _centre = v,
-                    validator: (value) =>
-                        value == null ? "Ce champ est requis" : null,
-                    decoration: _inputDecoration(
-                      hintText: "Sélectionner ",
                     ),
-                  ),
-                  const SizedBox(height: 20),
+                  ],
+                ),
+                const SizedBox(height: 20),
 
-                  _buildLabel("Motif du rendez-vous"),
-                  TextFormField(
-                    decoration: _inputDecoration(
-                      hintText: "Ex: Consultation",
-                    ),
-                    onSaved: (v) => _motif = v,
+                _buildLabel("Centre de santé"),
+                DropdownButtonFormField<String>(
+                  items: ["Hôpital A", "Clinique B", "Cabinet C"]
+                      .map((c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(
+                            c,
+                          )))
+                      .toList(),
+                  onChanged: (v) {},
+                  decoration: _inputDecoration(
+                    hintText: "Sélectionner ",
+                    fillColor: Colors.white,
                   ),
-                  const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 20),
 
-                  _buildLabel("Notes supplémentaires"),
-                  TextFormField(
+                _buildLabel("Motif du rendez-vous"),
+                TextFormField(
+                  decoration: _inputDecoration(
+                    hintText: "Ex: Consultation",
+                    fillColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                _buildLabel("Notes supplémentaires"),
+                SizedBox(
+                  height: 80,
+                  child: TextFormField(
                     maxLines: 3,
                     decoration: _inputDecoration(
                       hintText: "Entrez les notes...",
+                      fillColor: Colors.white,
                     ),
-                    onSaved: (v) => _notes = v,
                   ),
-                  const SizedBox(height: 24),
+                ),
+                const SizedBox(height: 24),
 
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("#285D90"),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor("#285D90"),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        "Enregistrer",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Rendez-vous enregistré avec succès !"),
-                            ),
-                          );
-
-                          Navigator.pop(context);
-                        }
-                      },
                     ),
-                  )
-                ],
-              ),
+                    child: const Text(
+                      "Enregistrer",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    onPressed: () {
+                      // Redirection directe vers CalendarPage
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CalendarPage(),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
             ),
           ),
         ),
@@ -258,8 +244,11 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
   InputDecoration _inputDecoration({
     required String hintText,
     String? iconPath,
+    Color? fillColor,
   }) {
     return InputDecoration(
+      filled: true,
+      fillColor: fillColor ?? Colors.white,
       border: OutlineInputBorder(
         borderSide: BorderSide(color: HexColor('#CBD5E1')),
       ),
@@ -280,32 +269,17 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
     );
   }
 
-  Widget _buildLabel(String text, {bool required = false}) {
+  Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: RichText(
-        text: TextSpan(
-          text: text,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: Colors.black,
-          ),
-          children: required
-              ? const [
-                  TextSpan(
-                    text: ' *',
-                    style: TextStyle(color: Colors.red),
-                  )
-                ]
-              : [],
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: Colors.black,
         ),
       ),
     );
-  }
-
-  String? _requiredValidator(String? value) {
-    if (value == null || value.isEmpty) return 'Ce champ est requis';
-    return null;
   }
 }

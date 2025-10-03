@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rmelapp/medecin/utils/HexColor.dart';
-import '../../new_agenda.dart';
+import '../../agenda/nouveau_rdv.dart';
 
 class RdvTab extends StatelessWidget {
   const RdvTab({Key? key}) : super(key: key);
@@ -117,7 +118,7 @@ class RdvTab extends StatelessWidget {
                 color: const Color(0xFF4A90E2).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child:  Image.asset(
+              child:  SvgPicture.asset(
                 'assets/icons/frame5.svg',
                 width: 24,
                 height: 24,

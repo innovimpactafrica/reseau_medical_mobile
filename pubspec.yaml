@@ -43,6 +43,8 @@ dependencies:
   path: ^1.9.0
   fl_chart: ^0.69.0
   table_calendar: ^3.0.9
+  flutter_sound: ^9.2.13
+  permission_handler: ^11.0.0
 
 dev_dependencies:
   flutter_test:
@@ -114,7 +116,7 @@ flutter:
       - assets/icons/piece.svg
       - assets/icons/Address.svg
       - assets/icons/Cinema.png
-    
+      - assets/icons/filem.svg
       - assets/icons/Customer.svg
       - assets/icons/Depression.svg
       - assets/icons/frame.png
@@ -151,6 +153,7 @@ flutter:
       - assets/icons/cons.png
       - assets/icons/antec.png
       - assets/icons/send.png
+      - assets/icons/rdv.png
   
 
 

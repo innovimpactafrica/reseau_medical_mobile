@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rmelapp/medecin/pages/ordonnance/detail_patient.dart';
 import 'patient_detail.dart';
 import '../widgets/patient_form.dart';
 
@@ -86,7 +87,7 @@ class _PatientsPageState extends State<PatientsPage> {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            PatientDetailPage(name: name, lastVisit: lastVisit),
+                            PatientDetailPage(),
                       ),
                     );
                   },
@@ -146,12 +147,13 @@ class _PatientsPageState extends State<PatientsPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF1E4777),
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => const PatientFormModal(),
-          );
+           Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            NouveauPatientPage(),
+                      ),
+                    );
         },
         child: const Icon(Icons.add, size: 30),
       ),

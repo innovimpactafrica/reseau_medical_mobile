@@ -267,25 +267,32 @@ Widget _buildStatCards() {
     });
   }
 
-  Widget _buildTabContent() {
-    return Container(
-      color: HexColor('#F8FAFC'),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: _selectedTab == 0
-            ? Column(
-                children: const [
-                  ConsultationChart(),
-                  SizedBox(height: 16),
-                  PathologyChart(),
-                  SizedBox(height: 16),
-                  AppointmentStatusChart(),
-                ],
-              )
-            : const AppointmentsList(),
-      ),
-    );
-  }
+ Widget _buildTabContent() {
+  return Container(
+    color: HexColor('#F8FAFC'),
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: _selectedTab == 0
+          ? Column(
+              children: const [
+                ConsultationChart(),
+                SizedBox(height: 16),
+                PathologyChart(),
+                SizedBox(height: 16),
+                AppointmentStatusChart(),
+              ],
+            )
+          : AppointmentsList(
+              onVoirTous: () {
+                setState(() {
+                  _currentBottomIndex = 1; // 👉 va à l’onglet Agenda
+                });
+              },
+            ),
+    ),
+  );
+}
+
 
   // --- Bottom Navigation ---
   Widget _buildBottomNavigation() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rmelapp/medecin/pages/ordonnance/new_ordonnance.dart';
+import 'package:rmelapp/medecin/pages/ordonnance/ordonnance_page.dart';
 import '../../utils/HexColor.dart';
 
 class ChoisirPatient extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => const OrdonnancesPage(),
                 ),
                 const Expanded(
                   child: Text(
@@ -116,11 +117,13 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => NewOrdonnancePage(
-                                doctorName: pat["name"]!,
-                                specialty: pat["age"]!,
-                                clinic: pat["sexe"]!,
-                                initials: pat["initials"]!,
-                              ),
+  doctorName: "Dr. Ndiaye", // 👨‍⚕️ Exemple : nom du médecin connecté
+  specialty: "Cardiologue",
+  clinic: "Clinique Pasteur",
+  initials: "DN",
+  patientName: pat["name"]!, // ✅ ici on passe le vrai nom du patient
+),
+
                             ),
                           );
                         },

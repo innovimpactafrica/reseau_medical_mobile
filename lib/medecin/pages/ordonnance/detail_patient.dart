@@ -6,9 +6,9 @@ import 'tabs/document_tab.dart';
 import 'tabs/rdv_tab.dart';
 
 // Couleurs utilisées
-final Color redActive = Color(0xFFD81B60);
-final Color greyInactive = Color(0xFF9E9E9E);
-final Color lightGreyBg = Color(0xFFF5F7FA);
+final Color redActive = const Color(0xFFD81B60);
+final Color greyInactive = const Color(0xFF9E9E9E);
+final Color lightGreyBg = const Color(0xFFF5F7FA);
 
 class PatientDetailPage extends StatefulWidget {
   const PatientDetailPage({Key? key}) : super(key: key);
@@ -17,7 +17,8 @@ class PatientDetailPage extends StatefulWidget {
   State<PatientDetailPage> createState() => _PatientDetailPageState();
 }
 
-class _PatientDetailPageState extends State<PatientDetailPage> with SingleTickerProviderStateMixin {
+class _PatientDetailPageState extends State<PatientDetailPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -36,7 +37,9 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final currentTabIndex =
-        (_tabController.index >= 0 && _tabController.index < 4) ? _tabController.index : 0;
+        (_tabController.index >= 0 && _tabController.index < 4)
+            ? _tabController.index
+            : 0;
 
     return Scaffold(
       backgroundColor: lightGreyBg,
@@ -58,12 +61,120 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
         ),
         title: const Text(
           "Détails Patient",
-          style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
         ),
         actions: [
-          IconButton(
+          PopupMenuButton<int>(
+            color: Colors.white,
             icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {},
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/filetext.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Créer une ordonnance"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/proicons.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Ajouter une note"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 3,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/filedoc.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Ajouter un document"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 4,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/programme.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Programmer un RDV"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 5,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/mess.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Envoyer un message"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 6,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/filedoc.png",
+                        width: 20, height: 20),
+                    const SizedBox(width: 8),
+                    const Text("Ajouter un compte rendu"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 7,
+                child: Row(
+                  children: [
+                    Image.asset("assets/icons/share.png",
+                        width: 20, height: 20, color: HexColor('#B53C3A')),
+                    const SizedBox(width: 8),
+                     Text(
+                      "Partager le dossier",
+                      style: TextStyle(color: HexColor('#B53C3A')),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            onSelected: (value) {
+              switch (value) {
+                case 1:
+                  print("Créer une ordonnance");
+                  break;
+                case 2:
+                  print("Ajouter une note");
+                  break;
+                case 3:
+                  print("Ajouter un document");
+                  break;
+                case 4:
+                  print("Programmer un RDV");
+                  break;
+                case 5:
+                  print("Envoyer un message");
+                  break;
+                case 6:
+                  print("Ajouter un compte rendu");
+                  break;
+                case 7:
+                  print("Partager le dossier");
+                  break;
+              }
+            },
           ),
         ],
       ),
@@ -82,10 +193,14 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
                 ),
                 SizedBox(height: 10),
                 Text("Amadou Ndiaye",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 24)),
                 SizedBox(height: 4),
                 Text("ID: 123456",
-                    style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w500)),
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500)),
               ],
             ),
           ),
@@ -116,8 +231,11 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
                         ),
                         Container(
                           height: 3,
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          color: isSelected ? redActive : Colors.transparent,
+                          margin:
+                              const EdgeInsets.symmetric(horizontal: 20),
+                          color: isSelected
+                              ? redActive
+                              : Colors.transparent,
                         )
                       ],
                     ),
@@ -131,15 +249,16 @@ class _PatientDetailPageState extends State<PatientDetailPage> with SingleTicker
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children:  [
+              children: [
                 InfoTab(),
                 HistoriqueTab(),
                 DocumentsTab(
-  doctorName: "Dr. Amadou",
-  specialty: "Cardiologue",
-  clinic: "Clinique XYZ",
-  initials: "AA",
-),
+                  doctorName: "Dr. Amadou",
+                  specialty: "Cardiologue",
+                  clinic: "Clinique XYZ",
+                  initials: "AA",
+                  patientName: "Amadou Ndiaye",
+                ),
                 RdvTab(),
               ],
             ),

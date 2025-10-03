@@ -7,6 +7,7 @@ class NewOrdonnancePage extends StatefulWidget {
   final String specialty;
   final String clinic;
   final String initials;
+  final String patientName; // ✅ ajoute ceci
 
   const NewOrdonnancePage({
     super.key,
@@ -14,6 +15,7 @@ class NewOrdonnancePage extends StatefulWidget {
     required this.specialty,
     required this.clinic,
     required this.initials,
+    required this.patientName, // ✅ ajoute ceci
   });
 
   @override
@@ -40,20 +42,25 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
   ];
 
   // Aller à la page récapitulatif
-  void _goToRecapPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => RecapOrdonnancePage(
-          doctorName: widget.doctorName,
-          clinic: widget.clinic,
-          patientName: widget.doctorName,
-          medicaments: medicaments,
-          notes: notesController.text,
-        ),
+ void _goToRecapPage() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => RecapOrdonnanceBottomSheet(
+        doctorName: widget.doctorName,
+        clinic: widget.clinic,
+        patientName: widget.patientName,
+        date:
+            "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+        notes: notesController.text.isEmpty
+            ? "Aucune instruction particulière"
+            : notesController.text,
+        medicaments: medicaments,
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

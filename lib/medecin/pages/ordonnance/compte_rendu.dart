@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import '../../utils/HexColor.dart';
+import 'package:rmelapp/medecin/utils/HexColor.dart';
+import 'addcr.dart'; // <-- la page modale pour ajouter un CR
 
 class CompteRenduPage extends StatefulWidget {
   const CompteRenduPage({Key? key}) : super(key: key);
@@ -14,52 +18,72 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: HexColor('#F2F5FA'),
+
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4A6FA5),
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        title: const Text(
-          "Compte rendu",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          decoration:  BoxDecoration(
+            gradient: LinearGradient(
+              colors: [HexColor('#305579'),HexColor('#1C3752')],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
-        centerTitle: true,
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+            ),
+            const Expanded(
+              child: Text(
+                "Compte rendu",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 48), // pour équilibrer avec le bouton retour
+          ],
+        ),
       ),
+
       body: Column(
         children: [
-          // Container blanc avec les onglets
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16),
+          // Filtres directement sur fond gris clair
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               children: tabs.asMap().entries.map((entry) {
                 int index = entry.key;
                 String tab = entry.value;
                 bool isSelected = index == selectedTabIndex;
-                
+
                 return Expanded(
                   child: GestureDetector(
                     onTap: () => setState(() => selectedTabIndex = index),
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFFB85450) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
+                        color: isSelected ? HexColor('#B53C3A'): Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: isSelected
+                            ? null
+                            : Border.all(color: Colors.grey.shade400, width: 1),
                       ),
                       child: Text(
                         tab,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : const Color(0xFF666666),
-                          fontSize: 16,
+                          color: isSelected ? Colors.white : HexColor('#305579'),
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -69,142 +93,43 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
               }).toList(),
             ),
           ),
-          
-          // Liste des comptes rendus
+
+          // Liste des comptes rendus avec largeur réduite
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               children: [
-                // Premier élément sélectionné avec bordure violette
-                Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: const Color(0xFF9C27B0),
-                      width: 2,
-                      style: BorderStyle.solid,
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      // Bordure en pointillés
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: const Color(0xFF9C27B0),
-                            width: 1,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: CustomPaint(
-                          painter: DashedBorderPainter(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.description, color: Color(0xFF666666), size: 20),
-                                    const SizedBox(width: 8),
-                                    const Text(
-                                      "CR - 1222",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFE3F2FD),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: const Text(
-                                        "Texte",
-                                        style: TextStyle(
-                                          color: Color(0xFF2196F3),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  "Consultation",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  "12/05/2025 • txt",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF666666),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "Détails",
-                                      style: TextStyle(
-                                        color: Color(0xFF2196F3),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                _buildCompteRenduItem(
+                  "CR-1222",
+                  "Consultation",
+                  "12/05/2025 • txt",
+                  "Texte",
+                  HexColor('#6D9DC3'),
+                  const Color(0xFFE3F2FD),
                 ),
-                
-                // Deuxième élément
                 _buildCompteRenduItem(
                   "CR-1223",
-                  "Annalyse",
+                  "Analyse",
                   "05/05/2023 • txt",
                   "Texte",
-                  const Color(0xFF2196F3),
+                  HexColor('#6D9DC3'),
                   const Color(0xFFE3F2FD),
                   showNonModifiable: true,
                 ),
-                
-                // Troisième élément
                 _buildCompteRenduItem(
                   "CR-1224",
                   "Radio",
                   "15/05/2023 • mp4",
                   "Vidéo",
-                  const Color(0xFFE91E63),
+                  HexColor('#FF6B6B'),
                   const Color(0xFFFCE4EC),
                 ),
-                
-                // Quatrième élément
                 _buildCompteRenduItem(
                   "CR-1225",
                   "Prise de sang",
                   "20/04/2025 • mp3",
                   "Audio",
-                  const Color(0xFFFF9800),
+                  HexColor('#F29900'),
                   const Color(0xFFFFF3E0),
                   showNonModifiable: true,
                 ),
@@ -213,12 +138,39 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
           ),
         ],
       ),
-      
-      // Bouton flottant
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color(0xFF2196F3),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
+
+      // Bouton flottant rond avec dégradé
+      floatingActionButton: Container(
+        width: 40,
+        height: 40,
+        decoration:  BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [HexColor('#2563EB'), HexColor('#1D4ED8')],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: IconButton(
+          icon: const Icon(Icons.add, color: Colors.white, size: 22),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (context) => CompteRenduModal(),
+            );
+          },
+        ),
       ),
     );
   }
@@ -233,16 +185,20 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
     {bool showNonModifiable = false}
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20, 
+        vertical: 8// ⬅️ Ajuste ici la largeur des cartes (plus tu augmentes, plus c’est étroit)
+        
+      ),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -251,17 +207,18 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
         children: [
           Row(
             children: [
-              const Icon(Icons.description, color: Color(0xFF666666), size: 20),
+               SvgPicture.asset('assets/icons/filem.svg'),
               const SizedBox(width: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: HexColor('#333333'),
                 ),
               ),
               const Spacer(),
+              
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
@@ -279,57 +236,45 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
+            style:  TextStyle(fontSize: 14, color:HexColor('#4B5563')),
           ),
           const SizedBox(height: 4),
           Text(
             date,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF666666),
-            ),
+            style:  TextStyle(fontSize: 14, color: HexColor('#4B5563')),
           ),
-          const SizedBox(height: 12),
-          
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (showNonModifiable)
-                const Text(
+                 Text(
                   "Non modifiable",
                   style: TextStyle(
-                    color: Color(0xFFE91E63),
+                    color:HexColor('#FF6B6B'),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 )
               else
                 const SizedBox.shrink(),
-              
               TextButton(
                 onPressed: () {},
-                child: const Row(
+                child:  Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       "Détails",
                       style: TextStyle(
-                        color: Color(0xFF2196F3),
+                        color: HexColor('#2C7BE5'),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: Color(0xFF2196F3),
-                      size: 18,
-                    ),
+                    Icon(Icons.chevron_right, color: HexColor('#2C7BE5'), size: 18),
                   ],
                 ),
               ),
@@ -339,64 +284,4 @@ class _CompteRenduPageState extends State<CompteRenduPage> {
       ),
     );
   }
-}
-
-class DashedBorderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = const Color(0xFF9C27B0)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-
-    const double dashWidth = 4;
-    const double dashSpace = 4;
-    
-    // Top border
-    double startX = 0;
-    while (startX < size.width) {
-      canvas.drawLine(
-        Offset(startX, 0),
-        Offset(startX + dashWidth > size.width ? size.width : startX + dashWidth, 0),
-        paint,
-      );
-      startX += dashWidth + dashSpace;
-    }
-    
-    // Right border
-    double startY = 0;
-    while (startY < size.height) {
-      canvas.drawLine(
-        Offset(size.width, startY),
-        Offset(size.width, startY + dashWidth > size.height ? size.height : startY + dashWidth),
-        paint,
-      );
-      startY += dashWidth + dashSpace;
-    }
-    
-    // Bottom border
-    startX = size.width;
-    while (startX > 0) {
-      canvas.drawLine(
-        Offset(startX, size.height),
-        Offset(startX - dashWidth < 0 ? 0 : startX - dashWidth, size.height),
-        paint,
-      );
-      startX -= dashWidth + dashSpace;
-    }
-    
-    // Left border
-    startY = size.height;
-    while (startY > 0) {
-      canvas.drawLine(
-        Offset(0, startY),
-        Offset(0, startY - dashWidth < 0 ? 0 : startY - dashWidth),
-        paint,
-      );
-      startY -= dashWidth + dashSpace;
-    }
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

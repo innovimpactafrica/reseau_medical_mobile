@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppointmentsList extends StatelessWidget {
-  const AppointmentsList({Key? key}) : super(key: key);
+  final VoidCallback? onVoirTous;
+
+  const AppointmentsList({Key? key, this.onVoirTous}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +79,12 @@ class AppointmentsList extends StatelessWidget {
             int index = entry.key;
             Map<String, dynamic> appointment = entry.value;
             bool isLast = index == appointments.length - 1;
-            
+
             return Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               decoration: BoxDecoration(
-                border: isLast 
-                    ? null 
+                border: isLast
+                    ? null
                     : const Border(
                         bottom: BorderSide(
                           color: Color(0xFFF1F5F9),
@@ -92,18 +94,14 @@ class AppointmentsList extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Barre colorée à gauche + heure
-                  Column(
-                    children: [
-                      Container(
-                        width: 3,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: appointment["statusColor"] as Color,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ],
+                  // Barre colorée à gauche
+                  Container(
+                    width: 3,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: appointment["statusColor"] as Color,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -139,9 +137,11 @@ class AppointmentsList extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: (appointment["statusColor"] as Color).withOpacity(0.1),
+                      color: (appointment["statusColor"] as Color)
+                          .withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -159,24 +159,27 @@ class AppointmentsList extends StatelessWidget {
           }).toList(),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Voir tous les rendez-vous",
-                  style: TextStyle(
-                    color: const Color(0xFF3B82F6),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+            child: GestureDetector(
+              onTap: onVoirTous, // ✅ Callback vers Dashboard
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Voir tous les rendez-vous",
+                    style: TextStyle(
+                      color: const Color(0xFF3B82F6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 12,
-                  color: const Color(0xFF3B82F6),
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12,
+                    color: const Color(0xFF3B82F6),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

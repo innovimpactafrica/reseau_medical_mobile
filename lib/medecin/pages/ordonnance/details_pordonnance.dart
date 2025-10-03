@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../utils/HexColor.dart';
 import 'detail_patient.dart';
 class OrdonnanceDetailPage extends StatelessWidget {
@@ -59,7 +60,7 @@ class OrdonnanceDetailPage extends StatelessWidget {
                   Row(
                     children: [
                       // TODO: Remplacer par ton icône asset
-                      Image.asset('assets/icons/gg_info.svg', color: HexColor("#305579")),
+                      SvgPicture.asset('assets/icons/gg_info.svg', color: HexColor("#305579")),
                       const SizedBox(width: 8),
                       const Text(
                         "Détails",
@@ -110,7 +111,7 @@ class OrdonnanceDetailPage extends StatelessWidget {
                   Row(
                     children: [
                       // TODO: Remplacer par ton icône asset
-                      Image.asset('assets/icons/mdi.svg', color: HexColor("#305579")),
+                      SvgPicture.asset('assets/icons/mdi.svg', color: HexColor("#305579")),
                       const SizedBox(width: 8),
                       const Text(
                         "Médicaments",
@@ -138,12 +139,12 @@ class OrdonnanceDetailPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment .start,
                 children: [
                   Row(
                     children: [
                       // TODO: Remplacer par ton icône asset
-                     Image.asset('assets/icons/gg_info.svg', color: HexColor("#305579")),
+                     SvgPicture.asset('assets/icons/gg_info.svg', color: HexColor("#305579")),
                       const SizedBox(width: 8),
                       const Text(
                         "Instructions particulières",
@@ -174,7 +175,7 @@ class OrdonnanceDetailPage extends StatelessWidget {
             // ----------- Bouton Télécharger -----------
             OutlinedButton.icon(
               onPressed: () {},
-              icon: Image.asset('assets/icons/tele.png'),
+              icon: SvgPicture.asset('assets/icons/tele.png'),
               label:  Text(
                 "Télécharger",
                 style: TextStyle(
