@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/HexColor.dart';
-import 'calendar.dart'; // <-- Assure-toi du chemin correct vers CalendarPage
+import 'calendar.dart';
 
 class NouveauRendezVousPage extends StatefulWidget {
   const NouveauRendezVousPage({super.key});
@@ -38,22 +38,20 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
           ),
         ),
         elevation: 0,
-        centerTitle: false,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 50),
-          child: Text(
-            "Nouveau rendez-vous",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
+        centerTitle: true, // Titre centré
+        title: const Text(
+          "Nouveau rendez-vous",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // simple retour
+          },
         ),
       ),
       body: ClipRRect(
@@ -68,7 +66,7 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLabel("Patient"),
+                _buildLabel("Patient", isRequired: true),
                 TextFormField(
                   decoration: _inputDecoration(
                     hintText: "Rechercher un patient",
@@ -78,7 +76,7 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
                 ),
                 const SizedBox(height: 16),
 
-                _buildLabel("Date"),
+                _buildLabel("Date", isRequired: true),
                 TextFormField(
                   controller: _dateController,
                   readOnly: true,
@@ -126,8 +124,7 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
                               );
                               if (picked != null) {
                                 setState(() {
-                                  _startController.text =
-                                      picked.format(context);
+                                  _startController.text = picked.format(context);
                                 });
                               }
                             },
@@ -156,8 +153,7 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
                               );
                               if (picked != null) {
                                 setState(() {
-                                  _endController.text =
-                                      picked.format(context);
+                                  _endController.text = picked.format(context);
                                 });
                               }
                             },
@@ -169,14 +165,10 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
                 ),
                 const SizedBox(height: 20),
 
-                _buildLabel("Centre de santé"),
+                _buildLabel("Centre de santé", isRequired: true),
                 DropdownButtonFormField<String>(
                   items: ["Hôpital A", "Clinique B", "Cabinet C"]
-                      .map((c) => DropdownMenuItem(
-                          value: c,
-                          child: Text(
-                            c,
-                          )))
+                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                       .toList(),
                   onChanged: (v) {},
                   decoration: _inputDecoration(
@@ -223,13 +215,8 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                     onPressed: () {
-                      // Redirection directe vers CalendarPage
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CalendarPage(),
-                        ),
-                      );
+                      // Retour vers CalendarPage
+                      Navigator.pop(context, true);
                     },
                   ),
                 )
@@ -269,16 +256,25 @@ class _NouveauRendezVousPageState extends State<NouveauRendezVousPage> {
     );
   }
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(String text, {bool isRequired = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-          color: Colors.black,
-        ),
+      child: Row(
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          if (isRequired)
+            const Text(
+              ' *',
+              style: TextStyle(color: Colors.red, fontSize: 14),
+            ),
+        ],
       ),
     );
   }

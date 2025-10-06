@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rmelapp/medecin/pages/ordonnance/detail_patient.dart';
 import 'patient_detail.dart';
 import '../widgets/patient_form.dart';
+import '../utils/HexColor.dart';
 
 class PatientsPage extends StatefulWidget {
   const PatientsPage({Key? key}) : super(key: key);
@@ -24,25 +25,55 @@ class _PatientsPageState extends State<PatientsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
+
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E4777),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Patients",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [HexColor('#305579'), HexColor('#1C3752')],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
-        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Icône de retour blanche
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+
+            // Titre centré
+            const Expanded(
+              child: Center(
+                child: Text(
+                  "Patients",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+
+            // Espace réservé pour équilibrer le titre
+            const SizedBox(width: 48),
+          ],
+        ),
       ),
+
       body: Column(
         children: [
           const SizedBox(height: 10),
+
           // Champ de recherche
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -64,7 +95,9 @@ class _PatientsPageState extends State<PatientsPage> {
               },
             ),
           ),
+
           const SizedBox(height: 16),
+
           // Liste patients
           Expanded(
             child: ListView.builder(
@@ -86,15 +119,13 @@ class _PatientsPageState extends State<PatientsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            PatientDetailPage(),
+                        builder: (_) => PatientDetailPage(),
                       ),
                     );
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -105,11 +136,10 @@ class _PatientsPageState extends State<PatientsPage> {
                           backgroundColor: const Color(0xFFE8F0FE),
                           child: Text(
                             name.isNotEmpty
-                                ? name.split(" ")[0][0] +
-                                    name.split(" ")[1][0]
+                                ? name.split(" ")[0][0] + name.split(" ")[1][0]
                                 : "?",
-                            style: const TextStyle(
-                              color: Color(0xFF1E4777),
+                            style:  TextStyle(
+                              color: HexColor('#2563EB'),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -144,18 +174,41 @@ class _PatientsPageState extends State<PatientsPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF1E4777),
-        onPressed: () {
-           Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            NouveauPatientPage(),
-                      ),
-                    );
-        },
-        child: const Icon(Icons.add, size: 30),
+
+      // Bouton flottant stylé
+      floatingActionButton: Container(
+        width: 60,
+        height: 60,
+        decoration:  BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [
+            HexColor('#2563EB'), // bleu foncé
+            HexColor('#1D4ED8'), // bleu clair
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: RawMaterialButton(
+          shape: const CircleBorder(),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const NouveauPatientPage(),
+              ),
+            );
+          },
+          child: const Icon(Icons.add, color: Colors.white, size: 30),
+        ),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rmelapp/medecin/pages/agenda/nouveau_rdv.dart';
 import 'package:rmelapp/medecin/utils/HexColor.dart';
-import 'agenda_list.dart'; // Assure-toi que ce fichier existe bien
+import 'agenda_list.dart'; // garde ton fichier existant
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -20,47 +20,68 @@ class _CalendarPageState extends State<CalendarPage> {
       {
         "title": "Consultation avec Lamine Diop",
         "time": "09:00",
-        "location": "Hôpital Fann",
+        "location": "Hopital Fann",
         "status": "Annulé",
         "statusColor": Color(0xFFF97316),
         "fullDate": "14/07/2025 - 09:00",
-        "id": "1"
+        "id": "1",
+        "accent": null,
       }
     ],
     DateTime(2025, 7, 15): [
       {
         "title": "Consultation avec Marie Diop",
         "time": "10:00",
-        "location": "Hôpital Yoff",
+        "location": "Hopital Yoff",
         "status": "À venir",
         "statusColor": Color(0xFF3B82F6),
         "fullDate": "15/07/2025 - 10:00",
-        "id": "2"
+        "id": "2",
+        "accent": Color(0xFFF59E0B), // left accent bar like capture
       },
       {
         "title": "Consultation avec Fama Sow",
         "time": "13:00",
-        "location": "Hôpital Yoff",
+        "location": "Hopital Yoff",
         "status": "Terminée",
         "statusColor": Color(0xFF10B981),
         "fullDate": "15/07/2025 - 13:00",
-        "id": "3"
+        "id": "3",
+        "accent": null,
       }
     ],
   };
 
   String _getMonthYear(DateTime date) {
     const months = [
-      '', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+      '',
+      'Janvier',
+      'Février',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juillet',
+      'Août',
+      'Septembre',
+      'Octobre',
+      'Novembre',
+      'Décembre'
     ];
     return '${months[date.month]} ${date.year}';
   }
 
   String _getDayName(DateTime date) {
     const days = [
-      'dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'
+      'dimanche',
+      'lundi',
+      'mardi',
+      'mercredi',
+      'jeudi',
+      'vendredi',
+      'samedi'
     ];
+    // date.weekday: 1..7 (Mon..Sun) so we map to 0..6 with (weekday % 7)
     return days[date.weekday % 7];
   }
 
@@ -98,40 +119,52 @@ class _CalendarPageState extends State<CalendarPage> {
         actions: [
           _buildToggleButton("Calendrier", Icons.calendar_today, false),
           _buildToggleButton("Liste", Icons.menu, true),
+          const SizedBox(width: 8),
         ],
       ),
       body: _showAgendaList
           ? const ListPage()
           : Column(
               children: [
+                // White area with month and week selector
                 Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Column(
                     children: [
                       _buildMonthNavigation(),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       _buildHorizontalWeekSelector(),
+                      const SizedBox(height: 8),
+                      // thin divider like capture
+                      Container(height: 4, color: HexColor('#F3F4F6')),
                     ],
                   ),
                 ),
-                const SizedBox(height: 4),
+
+                const SizedBox(height: 8),
+
+                // Events list area
                 Expanded(
                   child: ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: allEvents.length,
                     itemBuilder: (context, index) {
                       final date = allEvents[index].key;
                       final events = allEvents[index].value;
-                      final formattedDate = "${date.day} juillet ${_getDayName(date)}";
+                      final dayLabel =
+                          "${date.day} ${_capitalizeMonth(date.month)} ${_getDayName(date)}";
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          // Date header (ex: "14 juillet  vendredi")
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
                             child: Text(
-                              formattedDate,
+                              dayLabel,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
@@ -139,6 +172,8 @@ class _CalendarPageState extends State<CalendarPage> {
                               ),
                             ),
                           ),
+
+                          // Events for that day
                           ...events.map((event) => _buildEventItem(event)).toList(),
                         ],
                       );
@@ -149,18 +184,17 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // navigation as in your original code
           Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) =>  NouveauRendezVousPage()),
-      
+            context,
+            MaterialPageRoute(builder: (_) => NouveauRendezVousPage()),
           );
-          // Action à définir
         },
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Container(
-          width: 40,
-          height: 40,
+          width: 48,
+          height: 48,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [HexColor('#2563EB'), HexColor('#1D4ED8')],
@@ -168,6 +202,13 @@ class _CalendarPageState extends State<CalendarPage> {
               end: Alignment.bottomRight,
             ),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.12),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              )
+            ],
           ),
           child: const Icon(Icons.add, color: Colors.white),
         ),
@@ -175,8 +216,29 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  // Helper to capitalize month name for the small day label
+  String _capitalizeMonth(int month) {
+    const months = [
+      '',
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre'
+    ];
+    return months[month];
+  }
+
   Widget _buildToggleButton(String label, IconData icon, bool isList) {
     final selected = _showAgendaList == isList;
+    // On the capture, the selected toggle looks like a white pill with small red icon+label.
     return InkWell(
       onTap: () {
         setState(() {
@@ -198,7 +260,7 @@ class _CalendarPageState extends State<CalendarPage> {
               color: selected ? HexColor('#B53C3A') : Colors.white,
             ),
             if (selected) ...[
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
               Text(
                 label,
                 style: TextStyle(
@@ -247,7 +309,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildHorizontalWeekSelector() {
-    final startOfWeek = _focusedDay.subtract(Duration(days: _focusedDay.weekday % 7));
+    final startOfWeek =
+        _focusedDay.subtract(Duration(days: (_focusedDay.weekday % 7)));
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(7, (index) {
@@ -256,6 +319,8 @@ class _CalendarPageState extends State<CalendarPage> {
             currentDate.year == _selectedDay!.year &&
             currentDate.month == _selectedDay!.month &&
             currentDate.day == _selectedDay!.day;
+
+        final dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
         return GestureDetector(
           onTap: () {
@@ -266,17 +331,17 @@ class _CalendarPageState extends State<CalendarPage> {
           child: Column(
             children: [
               Text(
-                ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][index],
+                dayNames[index],
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF9CA3AF),
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 6),
               Container(
-                width: 25,
-                height: 25,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: isSelected ? HexColor('#B53C3A') : Colors.transparent,
                   shape: BoxShape.circle,
@@ -285,7 +350,8 @@ class _CalendarPageState extends State<CalendarPage> {
                   child: Text(
                     '${currentDate.day}',
                     style: TextStyle(
-                      color: isSelected ? Colors.white : const Color(0xFF111827),
+                      color:
+                          isSelected ? Colors.white : const Color(0xFF111827),
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -300,11 +366,13 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildEventItem(Map<String, dynamic> event) {
+    // Layout: left column with time + vertical line, right: card
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Left time + timeline
           Column(
             children: [
               Text(
@@ -316,98 +384,137 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
               const SizedBox(height: 6),
+              // Vertical line
               Container(
-                width: 1,
-                height: 70,
+                width: 1.5,
+                height: 86,
                 color: HexColor('#E6E6E6'),
               ),
             ],
           ),
+
           const SizedBox(width: 12),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.78,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-                            border: Border.all(color: const Color(0xFFE5E7EB)),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                bottomRight: Radius.circular(8),
-                topRight: Radius.circular(4),
-                bottomLeft: Radius.circular(4),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+          // Right: event card with optional left accent bar
+          Expanded(
+            child: Stack(
               children: [
-                // Title + status
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        event['title'],
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: EdgeInsets.only(left: event['accent'] != null ? 6 : 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(8),
+                      topRight: Radius.circular(4),
+                      bottomLeft: Radius.circular(4),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title + status
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              event['title'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF111827),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: event['statusColor'],
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                event['status'],
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: event['statusColor'],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Date + location
+                      Text(
+                        '${event['fullDate']}, ${event['location']}',
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF111827),
+                          fontSize: 13,
+                          color: Color(0xFF6B7280),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: event['statusColor'],
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          event['status'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: event['statusColor'],
+
+                      // If event completed (Terminée) show Rejoindre button like capture
+                      if (event['status'] == 'Terminée') ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              // action to join (video call)
+                            },
+                            icon: const Icon(Icons.videocam,
+                                color: Colors.white, size: 16),
+                            label: const Text("Rejoindre"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: HexColor('#D97B7B'), // pinkish
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
                         ),
                       ],
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 8),
-
-                // Date + location
-                Text(
-                  '${event['fullDate']}, ${event['location']}',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF6B7280),
+                    ],
                   ),
                 ),
 
-                // If ended
-                if (event['status'] == 'Terminée') ...[
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: null, // Button disabled
-                      icon: const Icon(Icons.videocam, color: Colors.white, size: 16),
-                      label: const Text("Rejoindre"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                // Left accent bar if exists
+                if (event['accent'] != null)
+                  Positioned(
+                    left: 0,
+                    top: 12,
+                    bottom: 12,
+                    child: Container(
+                      width: 6,
+                      decoration: BoxDecoration(
+                        color: event['accent'],
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
                         ),
                       ),
                     ),
-                  )
-                ]
+                  ),
               ],
             ),
           ),
@@ -416,4 +523,3 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 }
-

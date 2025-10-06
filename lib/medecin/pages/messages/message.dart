@@ -13,7 +13,7 @@ class _MessageState extends State<Message> {
   final List<Map<String, String>> medecins = [
     {
       "initials": "MS",
-      "name": "Marie Sne",
+      "name": "Marie Sene",
       "heure": "16:45",
       "chat": "Bonjour Docteur, je me sens beaucoup mieux..."
     },

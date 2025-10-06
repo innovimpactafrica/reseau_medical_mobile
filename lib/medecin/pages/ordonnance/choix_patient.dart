@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rmelapp/medecin/pages/ordonnance/new_ordonnance.dart';
-import 'package:rmelapp/medecin/pages/ordonnance/ordonnance_page.dart';
 import '../../utils/HexColor.dart';
 
 class ChoisirPatient extends StatefulWidget {
@@ -45,7 +44,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ✅ Header bleu
+          // Header bleu
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 60, 12, 20),
@@ -54,7 +53,9 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => const OrdonnancesPage(),
+                  onPressed: () {
+                    Navigator.pop(context); // ← Retour correct
+                  },
                 ),
                 const Expanded(
                   child: Text(
@@ -72,14 +73,14 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
             ),
           ),
 
-          // ✅ Contenu principal
+          // Contenu principal
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ✅ Barre de recherche (fond blanc)
+                  // Barre de recherche
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
@@ -104,7 +105,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                   ),
                   const SizedBox(height: 16),
 
-                  // ✅ Liste patients
+                  // Liste patients
                   Column(
                     children: patients.map((pat) {
                       return _buildPatientCard(
@@ -117,13 +118,15 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => NewOrdonnancePage(
-  doctorName: "Dr. Ndiaye", // 👨‍⚕️ Exemple : nom du médecin connecté
-  specialty: "Cardiologue",
-  clinic: "Clinique Pasteur",
-  initials: "DN",
-  patientName: pat["name"]!, // ✅ ici on passe le vrai nom du patient
-),
-
+                                doctorName: "Dr. Ndiaye",
+                                specialty: "Cardiologue",
+                                clinic: "Clinique Pasteur",
+                                initials: "DN", // Initiales du médecin
+                                patientName: pat["name"]!,
+                                patientInitials: pat["initials"]!,
+                                patientDetails:
+                                    "${pat["sexe"]!} • ${pat["age"]!}",
+                              ),
                             ),
                           );
                         },
@@ -139,7 +142,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
     );
   }
 
-  // ✅ Card patient (réduite et dispo à droite du nom)
+  // Card patient
   Widget _buildPatientCard({
     required String initials,
     required String name,
@@ -151,7 +154,7 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(10), // 🔹 Réduction padding
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -159,9 +162,8 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
         ),
         child: Row(
           children: [
-            // ✅ Avatar plus petit
             CircleAvatar(
-              radius: 18, // 🔹 Réduction taille
+              radius: 18,
               backgroundColor: HexColor("#E9EFFD"),
               child: Text(
                 initials,
@@ -173,13 +175,11 @@ class _ChoisirPatientState extends State<ChoisirPatient> {
               ),
             ),
             const SizedBox(width: 10),
-
-            // ✅ Infos patient
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nom + Disponible sur la même ligne
+                  // Nom + Disponible
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // ✅ Nécessaire pour SvgPicture
 import 'package:rmelapp/medecin/pages/agenda/calendar.dart';
-
+import '../../medecin/pages/ordonnance/ordonnance_page.dart';
 import 'package:rmelapp/medecin/pages/dashboard_doctor.dart';
 import 'package:rmelapp/medecin/pages/messages/message.dart';
 import 'package:rmelapp/medecin/pages/profil/compte.dart';
@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
     final List<Widget> pages = [
        DashboardDoctor(),
        CalendarPage(),
-       OrdonnancePage(),
+       OrdonnancesPage(),
        Message(),
        DocteurCompte()
       

@@ -3,11 +3,16 @@ import '../../utils/HexColor.dart';
 import 'recap_ordonnance.dart';
 
 class NewOrdonnancePage extends StatefulWidget {
+  // Infos du docteur
   final String doctorName;
   final String specialty;
   final String clinic;
   final String initials;
-  final String patientName; // ✅ ajoute ceci
+
+  // Infos du patient
+  final String patientName;
+  final String patientInitials;
+  final String patientDetails; // ex: "Femme • 25 ans"
 
   const NewOrdonnancePage({
     super.key,
@@ -15,7 +20,9 @@ class NewOrdonnancePage extends StatefulWidget {
     required this.specialty,
     required this.clinic,
     required this.initials,
-    required this.patientName, // ✅ ajoute ceci
+    required this.patientName,
+    required this.patientInitials,
+    required this.patientDetails,
   });
 
   @override
@@ -42,7 +49,7 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
   ];
 
   // Aller à la page récapitulatif
- void _goToRecapPage() {
+  void _goToRecapPage() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -61,7 +68,6 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +79,7 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
             padding: const EdgeInsets.fromLTRB(12, 50, 12, 20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [HexColor("#305579"), HexColor("#173047")],
+                colors: [HexColor("#305579"), HexColor("#1C3752")],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -89,7 +95,9 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                     "Nouvelle ordonnance",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
                 IconButton(
@@ -121,7 +129,7 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                           radius: 20,
                           backgroundColor: HexColor("#E9EFFD"),
                           child: Text(
-                            widget.initials,
+                            widget.patientInitials,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: HexColor("#2563EB"),
@@ -132,10 +140,10 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.doctorName,
+                            Text(widget.patientName,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16)),
-                            Text("${widget.specialty} • ${widget.clinic}",
+                            Text(widget.patientDetails,
                                 style: const TextStyle(
                                     fontSize: 12, color: Colors.black54)),
                           ],
@@ -151,10 +159,12 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                   const SizedBox(height: 20),
 
                   // Titre section
-                   Text(
+                  Text(
                     "Médicaments",
                     style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold, color: HexColor('#111827')),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: HexColor('#111827')),
                   ),
                   const SizedBox(height: 10),
 
@@ -209,7 +219,8 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                       filled: true,
                       fillColor: Colors.white,
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: HexColor("#CBD5E1")),
                         borderRadius: BorderRadius.circular(8),
@@ -247,13 +258,13 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
     );
   }
 
-  // Formulaire médicament corrigé
+  // Formulaire médicament
   Widget _buildMedicamentForm(int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white, // Fond blanc
+        color: Colors.white,
         border: Border.all(color: HexColor("#DBEAFE")),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -286,7 +297,8 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
             decoration: InputDecoration(
               hintText: "Saisir (autocomplète)",
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onChanged: (val) => medicaments[index]["nom"] = val,
@@ -300,7 +312,8 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
             decoration: InputDecoration(
               hintText: "Saisir",
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onChanged: (val) => medicaments[index]["dosage"] = val,
@@ -318,7 +331,7 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                     const SizedBox(height: 4),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        hintText: "Selectionner",
+                        hintText: "Sélectionner",
                         isDense: true,
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -345,7 +358,7 @@ class _NewOrdonnancePageState extends State<NewOrdonnancePage> {
                     const SizedBox(height: 4),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        hintText: "Selectionner",
+                        hintText: "Sélectionner",
                         isDense: true,
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 12, vertical: 10),

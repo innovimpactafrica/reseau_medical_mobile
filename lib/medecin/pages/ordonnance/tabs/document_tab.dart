@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../utils/HexColor.dart';
-import '../../ordonnance/new_ordonnance.dart';
-import '../details_pordonnance.dart'; // <-- Page à afficher
+import '../../ordonnance/new_ordonnance.dart'; // Import correct
+import '../details_pordonnance.dart'; // Page de détail si nécessaire
 
 class DocumentsTab extends StatefulWidget {
   final String doctorName;
@@ -9,6 +9,8 @@ class DocumentsTab extends StatefulWidget {
   final String clinic;
   final String initials;
   final String patientName;
+  final String patientInitials;
+  final String patientDetails;
 
   const DocumentsTab({
     Key? key,
@@ -17,6 +19,8 @@ class DocumentsTab extends StatefulWidget {
     required this.clinic,
     required this.initials,
     required this.patientName,
+    required this.patientInitials,
+    required this.patientDetails,
   }) : super(key: key);
 
   @override
@@ -137,6 +141,8 @@ class _DocumentsTabState extends State<DocumentsTab> {
                             clinic: widget.clinic,
                             initials: widget.initials,
                             patientName: widget.patientName,
+                            patientInitials: widget.patientInitials,
+                            patientDetails: widget.patientDetails,
                           ),
                         ),
                       );
@@ -175,12 +181,17 @@ class _DocumentsTabState extends State<DocumentsTab> {
   Widget _documentItem(String title, String date) {
     return InkWell(
       onTap: () {
-        // Redirection vers la page de détail
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => OrdonnanceDetailPage(
-              
+            builder: (_) => NewOrdonnancePage(
+              doctorName: widget.doctorName,
+              specialty: widget.specialty,
+              clinic: widget.clinic,
+              initials: widget.initials,
+              patientName: widget.patientName,
+              patientInitials: widget.patientInitials,
+              patientDetails: widget.patientDetails,
             ),
           ),
         );

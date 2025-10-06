@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rmelapp/medecin/pages/profil/compte.dart';
+import 'package:rmelapp/medecin/pages/affiliation.dart';
+import 'package:rmelapp/medecin/pages/patient.dart';
 import 'package:rmelapp/medecin/utils/HexColor.dart';
+import '../widgets/stat_card.dart';
 import '../widgets/quick_action.dart';
 import '../widgets/consultation_chart.dart';
 import '../widgets/pathologie_chart.dart';
 import '../widgets/appointment.dart';
 import '../widgets/appointment_list.dart';
-import './affiliation.dart';
-import './ordonnance/ordonnance_page.dart';
-import './patient.dart';
 import 'agenda/calendar.dart';
-import './messages/message.dart';
-import '../widgets/stat_card.dart';
+import 'ordonnance/ordonnance_page.dart';
+import 'messages/message.dart';
+import 'profil/compte.dart';
 
-
-// -------------------- DashboardDoctor --------------------
 class DashboardDoctor extends StatefulWidget {
   const DashboardDoctor({Key? key}) : super(key: key);
 
@@ -30,122 +27,141 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      backgroundColor: HexColor('#F2F5FA'),
+      // AppBar uniquement si on est sur l'Accueil (Dashboard)
+      appBar: _currentBottomIndex == 0 ? _buildDashboardAppBar() : null,
 
-      // 👉 AppBar affiché uniquement si index = 0
-      appBar: _currentBottomIndex == 0
-          ? AppBar(
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [HexColor('#305579'), HexColor('#1C3752')],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-              ),
-              title: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        
-                      color: HexColor('#E9EFFD'),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "LN",
-                        style: TextStyle(
-                          color: HexColor('#2563EB'),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Dr Ndiaye",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
-                      ),
-                      Text(
-                        "Cardiologue",
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              actions: [
-                Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : null, // 🚀 Pas d’AppBar si autre page
+      // Body
+      body: _getBody(),
 
-      body: IndexedStack(
-        index: _currentBottomIndex,
-        children: [
-          _buildDashboardContent(),
-           CalendarPage(),
-          const OrdonnancesPage(),
-          const Message(),
-          const DocteurCompte(),
-        ],
-      ),
+      // Bottom Navigation
       bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
-  Widget _buildDashboardContent() {
-    return SafeArea(
-      child: Column(
+  // --- AppBar du Dashboard ---
+  PreferredSizeWidget _buildDashboardAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [HexColor('#305579'), HexColor('#1C3752')],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      ),
+      title: Row(
         children: [
-          _buildStatCards(),
-          _buildQuickActions(),
-          _buildTabs(),
-          Expanded(child: _buildTabContent()),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: HexColor('#E9EFFD'),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                "LN",
+                style: TextStyle(
+                  color: HexColor('#2563EB'),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Text(
+                "Dr Ndiaye",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+              Text(
+                "Cardiologue",
+                style: TextStyle(fontSize: 12, color: Colors.white70),
+              ),
+            ],
+          ),
         ],
+      ),
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            shape: BoxShape.circle,
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.notifications_outlined,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // --- Retourne le body selon l'onglet sélectionné ---
+  Widget _getBody() {
+    switch (_currentBottomIndex) {
+      case 0:
+        return _buildDashboardBody(); // Accueil / Dashboard
+      case 1:
+        return const CalendarPage(); // Agenda
+      case 2:
+        return const OrdonnancesPage(); // Ordonnances
+      case 3:
+        return const Message(); // Messages
+      case 4:
+        return const DocteurCompte(); // Profil
+      default:
+        return _buildDashboardBody();
+    }
+  }
+
+  // --- Dashboard principal ---
+  Widget _buildDashboardBody() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFFF2F5FA),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildStatCards(),
+            const SizedBox(height: 16),
+            _buildQuickActions(),
+            const SizedBox(height: 16),
+            _buildTabs(),
+            const SizedBox(height: 16),
+            _buildTabContent(),
+          ],
+        ),
       ),
     );
   }
 
   // --- Stat Cards ---
-Widget _buildStatCards() {
-  return Container(
-    color: HexColor('#F2F5FA'),
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
+  Widget _buildStatCards() {
+    return Column(
+      children: const [
         Row(
-          children: const [
+          children: [
             Expanded(
               child: StatCard(
                 title: "Consultations",
@@ -166,9 +182,9 @@ Widget _buildStatCards() {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         Row(
-          children: const [
+          children: [
             Expanded(
               child: StatCard(
                 title: "Comptes rendus",
@@ -190,74 +206,66 @@ Widget _buildStatCards() {
           ],
         ),
       ],
-    ),
+    );
+  }
+
+  // --- Quick Actions ---
+ // --- Quick Actions ---
+Widget _buildQuickActions() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      QuickAction(
+        iconPath: "assets/icons/patie.png",
+        label: "Rendez-vous",
+        onTap: () {
+          setState(() {
+            _currentBottomIndex = 1; // bascule sur l'onglet Agenda
+            _selectedTab = 1;        // tab Rendez-vous actif dans dashboard (optionnel)
+          });
+        },
+      ),
+      QuickAction(
+        iconPath: "assets/icons/dispo.png",
+        label: "Disponibilités",
+        onTap: () {
+          
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const DisponibilitePage()),
+          );
+        },
+      ),
+      QuickAction(
+        iconPath: "assets/icons/pat.png",
+        label: "Patients",
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PatientsPage()),
+        ),
+      ),
+    ],
   );
 }
 
 
-  // --- Quick Actions ---
-  Widget _buildQuickActions() {
-    return Container(
-      color: HexColor('#F2F5FA'),
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          QuickAction(
-            iconPath: "assets/icons/patie.png",
-            label: "Rendez-vous",
-            onTap: () {
-    setState(() {
-      _currentBottomIndex = 1; // Même index que l’onglet Agenda
-    });
-  },
-
-          ),
-          QuickAction(
-            iconPath: "assets/icons/dispo.png",
-            label: "Disponibilités",
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DisponibilitePage()),
-            ),
-          ),
-          QuickAction(
-            iconPath: "assets/icons/pat.png",
-            label: "Patients",
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => PatientsPage()),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // --- Onglets Graphiques / Rendez-vous ---
   Widget _buildTabs() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: HexColor('#F1F5F9'),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          _TabButton(
-            title: "Graphiques",
-            index: 0,
-            selectedIndex: _selectedTab,
-            onTap: _onTabChanged,
-          ),
-          _TabButton(
-            title: "Rendez-vous",
-            index: 1,
-            selectedIndex: _selectedTab,
-            onTap: _onTabChanged,
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        _TabButton(
+          title: "Graphiques",
+          index: 0,
+          selectedIndex: _selectedTab,
+          onTap: _onTabChanged,
+        ),
+        _TabButton(
+          title: "Rendez-vous",
+          index: 1,
+          selectedIndex: _selectedTab,
+          onTap: _onTabChanged,
+        ),
+      ],
     );
   }
 
@@ -267,32 +275,25 @@ Widget _buildStatCards() {
     });
   }
 
- Widget _buildTabContent() {
-  return Container(
-    color: HexColor('#F8FAFC'),
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: _selectedTab == 0
-          ? Column(
-              children: const [
-                ConsultationChart(),
-                SizedBox(height: 16),
-                PathologyChart(),
-                SizedBox(height: 16),
-                AppointmentStatusChart(),
-              ],
-            )
-          : AppointmentsList(
-              onVoirTous: () {
-                setState(() {
-                  _currentBottomIndex = 1; // 👉 va à l’onglet Agenda
-                });
-              },
-            ),
-    ),
-  );
-}
-
+  Widget _buildTabContent() {
+    return _selectedTab == 0
+        ? Column(
+            children: const [
+              ConsultationChart(),
+              SizedBox(height: 16),
+              PathologyChart(),
+              SizedBox(height: 16),
+              AppointmentStatusChart(),
+            ],
+          )
+        : AppointmentsList(
+            onVoirTous: () {
+              setState(() {
+                _currentBottomIndex = 1; // Aller à Agenda
+              });
+            },
+          );
+  }
 
   // --- Bottom Navigation ---
   Widget _buildBottomNavigation() {
@@ -339,7 +340,7 @@ Widget _buildStatCards() {
                     Text(
                       navItems[index].label,
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: isSelected
                             ? HexColor('#B53C3A')
@@ -357,11 +358,10 @@ Widget _buildStatCards() {
   }
 }
 
-// --- Classe NavItem ---
+// --- Nav Item ---
 class NavItem {
   final String iconPath;
   final String label;
-
   NavItem({required this.iconPath, required this.label});
 }
 
@@ -404,30 +404,5 @@ class _TabButton extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// --- Pages factices ---
-class OrdonnancePage extends StatelessWidget {
-  const OrdonnancePage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Page Ordonnances"));
-  }
-}
-
-class MessagesPage extends StatelessWidget {
-  const MessagesPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Page Messages"));
-  }
-}
-
-class ProfilPage extends StatelessWidget {
-  const ProfilPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Page Profil"));
   }
 }
