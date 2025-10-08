@@ -17,7 +17,7 @@ class _OrdonnancesPageState extends State<OrdonnancesPage> {
     "Cardiologie",
     "Dermatologie",
     "Ophtalmologie",
-    "General"
+    "Generaliste"
   ];
 
   @override
