@@ -33,8 +33,7 @@ class _DashboardDoctorState extends State<DashboardDoctor> {
       // Body
       body: _getBody(),
 
-      // Bottom Navigation
-      bottomNavigationBar: _buildBottomNavigation(),
+   
     );
   }
 
@@ -295,75 +294,9 @@ Widget _buildQuickActions() {
           );
   }
 
-  // --- Bottom Navigation ---
-  Widget _buildBottomNavigation() {
-    final navItems = [
-      NavItem(iconPath: 'assets/icons/home.png', label: "Accueil"),
-      NavItem(iconPath: 'assets/icons/mage.png', label: "Agenda"),
-      NavItem(iconPath: 'assets/icons/script.png', label: "Ordonnances"),
-      NavItem(iconPath: 'assets/icons/mess.png', label: "Messages"),
-      NavItem(iconPath: 'assets/icons/solar.png', label: "Profil"),
-    ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          )
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(navItems.length, (index) {
-              final isSelected = _currentBottomIndex == index;
-              return GestureDetector(
-                onTap: () => setState(() => _currentBottomIndex = index),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      navItems[index].iconPath,
-                      width: 22,
-                      height: 22,
-                      color:
-                          isSelected ? HexColor('#B53C3A') : HexColor('#64748B'),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      navItems[index].label,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: isSelected
-                            ? HexColor('#B53C3A')
-                            : HexColor('#64748B'),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-// --- Nav Item ---
-class NavItem {
-  final String iconPath;
-  final String label;
-  NavItem({required this.iconPath, required this.label});
-}
 
 // --- Tab Button Widget ---
 class _TabButton extends StatelessWidget {
